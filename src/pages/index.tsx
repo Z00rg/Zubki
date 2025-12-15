@@ -106,24 +106,36 @@ const DentalImplantDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header */}
-      <header className="bg-gradient-to-r from-blue-600 to-indigo-700 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-white drop-shadow-md">
-              АРМ врача - Планирование дентальных имплантатов
-            </h1>
-            <p className="text-blue-200 text-sm mt-1">
-              Система автоматизированного проектирования
-            </p>
+      <header className="bg-white shadow-md">
+        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
+          <div className="flex items-center space-x-4">
+            {/* University Logo */}
+            <div className="flex items-center">
+              <img
+                  src="/samgmu-logo.jpg"
+                  alt="Самарский Государственный Медицинский Университет"
+                  className="h-20 w-auto object-contain"
+              />
+            </div>
+
+            <div>
+              <h1 className="text-xl font-bold text-[#000000] font-montserrat">
+                АРМ врача - Планирование дентальных имплантатов
+              </h1>
+              <p className="text-[#006CB4] text-sm font-open-sans">
+                Система автоматизированного проектирования
+              </p>
+            </div>
           </div>
+
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+              <div className="w-10 h-10 rounded-full bg-[#006CB4] flex items-center justify-center text-white font-bold">
                 Д
               </div>
-              <span className="text-white font-medium">Доктор Иванов</span>
+              <span className="text-[#000000] font-medium">Доктор Иванов</span>
             </div>
-            <button className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm transition-all duration-200 transform hover:scale-105">
+            <button className="bg-[#006CB4] hover:bg-[#005A94] text-white px-4 py-2 rounded-lg text-sm transition-all duration-200">
               Выход
             </button>
           </div>
