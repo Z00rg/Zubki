@@ -104,26 +104,38 @@ const DentalImplantDashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-blue-600 to-indigo-700 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-white drop-shadow-md">
-              АРМ врача - Планирование дентальных имплантатов
-            </h1>
-            <p className="text-blue-200 text-sm mt-1">
-              Система автоматизированного проектирования
-            </p>
+    <div className="min-h-screen bg-white font-sans">
+      {/* Header with Samara State Medical University logo */}
+      <header className="bg-white shadow-md border-b-2 border-[#006CB4]">
+        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
+          <div className="flex items-center space-x-4">
+            {/* University Logo */}
+            <div className="flex items-center">
+              <img 
+                src="/image.png" 
+                alt="Самарский Государственный Медицинский Университет" 
+                className="h-12 w-auto object-contain"
+              />
+            </div>
+            
+            <div>
+              <h1 className="text-xl font-bold text-[#000000] font-montserrat">
+                АРМ врача - Планирование дентальных имплантатов
+              </h1>
+              <p className="text-[#006CB4] text-sm font-open-sans">
+                Система автоматизированного проектирования
+              </p>
+            </div>
           </div>
+          
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+              <div className="w-10 h-10 rounded-full bg-[#006CB4] flex items-center justify-center text-white font-bold">
                 Д
               </div>
-              <span className="text-white font-medium">Доктор Иванов</span>
+              <span className="text-[#000000] font-medium">Доктор Иванов</span>
             </div>
-            <button className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm transition-all duration-200 transform hover:scale-105">
+            <button className="bg-[#006CB4] hover:bg-[#005A94] text-white px-4 py-2 rounded-lg text-sm transition-all duration-200">
               Выход
             </button>
           </div>
@@ -133,9 +145,9 @@ const DentalImplantDashboard = () => {
       <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
         <div className="flex gap-6">
           {/* Left sidebar - Patient list with search */}
-          <div className="w-1/4 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200/50 p-4">
+          <div className="w-1/4 bg-white rounded-xl shadow-md border border-gray-200 p-4">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-800">
+              <h2 className="text-lg font-semibold text-[#000000] font-montserrat">
                 Список пациентов
               </h2>
               <span className="flex items-center text-gray-400">
@@ -159,7 +171,7 @@ const DentalImplantDashboard = () => {
               <input
                 type="text"
                 placeholder="Поиск (ФИО, дата, диагноз)"
-                className="w-full pl-3 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                className="w-full pl-3 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006CB4] focus:border-[#006CB4] transition-all duration-200"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -170,9 +182,9 @@ const DentalImplantDashboard = () => {
               {filteredPatients.map((patient) => (
                 <div
                   key={patient.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-all duration-200 transform hover:translate-x-1 ${
+                  className={`p-3 border rounded-lg cursor-pointer transition-all duration-200 ${
                     selectedPatient?.id === patient.id
-                      ? "border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50 shadow-inner"
+                      ? "border-[#006CB4] bg-[#E4F0FA] shadow-inner"
                       : "border-gray-200 hover:bg-gray-50"
                   }`}
                   onClick={() => {
@@ -181,16 +193,16 @@ const DentalImplantDashboard = () => {
                   }}
                 >
                   <div className="flex justify-between items-start">
-                    <h3 className="font-medium text-gray-800">
+                    <h3 className="font-medium text-[#000000]">
                       {patient.fullName}
                     </h3>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#006CB4] text-white">
                       #{patient.id}
                     </span>
                   </div>
                   <div className="flex justify-between mt-1">
                     <p className="text-sm text-gray-600">{patient.visitDate}</p>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#3091D1] text-white">
                       {patient.diagnosis}
                     </span>
                   </div>
@@ -203,48 +215,81 @@ const DentalImplantDashboard = () => {
           <div className="w-3/4 space-y-6">
             {/* Patient card */}
             {selectedPatient && (
-              <div className="bg-gradient-to-r from-white to-gray-50 p-6 rounded-xl shadow-lg border border-gray-200/50">
+              <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-semibold text-gray-800">
+                  <h2 className="text-xl font-semibold text-[#000000] font-montserrat">
                     Карточка пациента
                   </h2>
                   <div className="flex space-x-2">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#006CB4] text-white">
                       Активен
                     </span>
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-6">
-                  <div className="bg-white p-4 rounded-lg border border-gray-200/50 shadow-sm">
-                    <label className="block text-sm font-medium text-gray-600 mb-1">
+                  <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                    <label className="block text-sm font-medium text-gray-600 mb-1 font-open-sans">
                       ФИО
                     </label>
-                    <p className="mt-1 text-lg font-semibold text-gray-800">
+                    <p className="mt-1 text-lg font-semibold text-[#000000] font-open-sans">
                       {selectedPatient.fullName}
                     </p>
                   </div>
-                  <div className="bg-white p-4 rounded-lg border border-gray-200/50 shadow-sm">
-                    <label className="block text-sm font-medium text-gray-600 mb-1">
+                  <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                    <label className="block text-sm font-medium text-gray-600 mb-1 font-open-sans">
                       Дата обращения
                     </label>
-                    <p className="mt-1 text-lg font-semibold text-gray-800">
+                    <p className="mt-1 text-lg font-semibold text-[#000000] font-open-sans">
                       {selectedPatient.visitDate}
                     </p>
                   </div>
-                  <div className="bg-white p-4 rounded-lg border border-gray-200/50 shadow-sm">
-                    <label className="block text-sm font-medium text-gray-600 mb-1">
+                  <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                    <label className="block text-sm font-medium text-gray-600 mb-1 font-open-sans">
                       Диагноз
                     </label>
-                    <p className="mt-1 text-lg font-semibold text-gray-800">
+                    <p className="mt-1 text-lg font-semibold text-[#000000] font-open-sans">
                       {selectedPatient.diagnosis}
                     </p>
                   </div>
                 </div>
 
-                <div className="mt-6 flex justify-end">
+                <div className="mt-6 flex justify-between">
+                  <div className="flex space-x-3">
+                    <button className="bg-white border border-[#006CB4] text-[#006CB4] px-4 py-2 rounded-lg shadow-sm hover:bg-[#E4F0FA] transition-all duration-200 flex items-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 mr-1"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      Загрузить
+                    </button>
+                    <button className="bg-white border border-[#006CB4] text-[#006CB4] px-4 py-2 rounded-lg shadow-sm hover:bg-[#E4F0FA] transition-all duration-200 flex items-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 mr-1"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      Сохранить
+                    </button>
+                  </div>
+                  
                   <button
                     onClick={calculateImplantParams}
-                    className="bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 text-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105 flex items-center"
+                    className="bg-[#006CB4] hover:bg-[#005A94] text-white px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -266,9 +311,9 @@ const DentalImplantDashboard = () => {
 
             {/* CT/MRI Scan Viewer */}
             {selectedPatient && (
-              <div className="bg-gradient-to-r from-white to-gray-50 p-6 rounded-xl shadow-lg border border-gray-200/50">
+              <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-semibold text-gray-800">
+                  <h2 className="text-xl font-semibold text-[#000000] font-montserrat">
                     Снимки КТ/МРТ
                   </h2>
                   <div className="flex space-x-2">
@@ -296,7 +341,7 @@ const DentalImplantDashboard = () => {
                       {/* Placeholder for CT scan image */}
                       <Image
                         src={ctImages[currentImageIndex]}
-                        alt="image_1"
+                        alt="CT Scan"
                         width={200}
                         height={200}
                         className="object-scale-down w-full max-h-4/5"
@@ -357,7 +402,7 @@ const DentalImplantDashboard = () => {
 
                   {/* Image thumbnails */}
                   <div className="w-32">
-                    <h3 className="text-sm font-medium mb-2 text-gray-700">
+                    <h3 className="text-sm font-medium mb-2 text-gray-700 font-open-sans">
                       Все снимки
                     </h3>
                     <div className="space-y-2">
@@ -366,14 +411,14 @@ const DentalImplantDashboard = () => {
                           key={index}
                           className={`bg-white border-2 rounded-lg cursor-pointer p-2 shadow-sm transition-all duration-200 ${
                             currentImageIndex === index
-                              ? "border-blue-500 ring-2 ring-blue-200 shadow-md"
+                              ? "border-[#006CB4] ring-2 ring-[#E4F0FA] shadow-md"
                               : "border-gray-200 hover:border-gray-300"
                           }`}
                           onClick={() => setCurrentImageIndex(index)}
                         >
                           <Image
                             src={item}
-                            alt="image_1"
+                            alt={`CT Scan ${index + 1}`}
                             width={680}
                             height={500}
                           ></Image>
@@ -387,13 +432,13 @@ const DentalImplantDashboard = () => {
 
             {/* CAD/CAM Implant Design Section */}
             {selectedPatient && implantParams && (
-              <div className="bg-gradient-to-r from-white to-gray-50 p-6 rounded-xl shadow-lg border border-gray-200/50">
+              <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-semibold text-gray-800">
+                  <h2 className="text-xl font-semibold text-[#000000] font-montserrat">
                     САПР имплантата
                   </h2>
                   <div className="flex space-x-2">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#3091D1] text-white">
                       Рассчитано
                     </span>
                   </div>
@@ -401,12 +446,12 @@ const DentalImplantDashboard = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {/* Calculated Parameters */}
-                  <div className="bg-white p-5 rounded-xl border border-gray-200/50 shadow-sm">
+                  <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
                     <div className="flex items-center mb-4">
-                      <div className="bg-blue-100 p-2 rounded-lg mr-3">
+                      <div className="bg-[#E4F0FA] p-2 rounded-lg mr-3">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          className="h-6 w-6 text-blue-600"
+                          className="h-6 w-6 text-[#006CB4]"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -419,78 +464,78 @@ const DentalImplantDashboard = () => {
                           />
                         </svg>
                       </div>
-                      <h3 className="text-lg font-medium text-gray-800">
+                      <h3 className="text-lg font-medium text-[#000000] font-montserrat">
                         Рассчитанные параметры
                       </h3>
                     </div>
                     <div className="space-y-4">
-                      <div className="flex justify-between items-center pb-3 border-b border-gray-100">
-                        <span className="text-gray-600">
+                      <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+                        <span className="text-gray-600 font-open-sans">
                           Диаметр имплантата:
                         </span>
-                        <span className="font-semibold text-gray-800 bg-blue-50 px-3 py-1 rounded-full">
+                        <span className="font-semibold text-[#000000] bg-[#E4F0FA] px-3 py-1 rounded-full font-open-sans">
                           {implantParams.diameter} мм
                         </span>
                       </div>
-                      <div className="flex justify-between items-center pb-3 border-b border-gray-100">
-                        <span className="text-gray-600">Длина имплантата:</span>
-                        <span className="font-semibold text-gray-800 bg-blue-50 px-3 py-1 rounded-full">
+                      <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+                        <span className="text-gray-600 font-open-sans">Длина имплантата:</span>
+                        <span className="font-semibold text-[#000000] bg-[#E4F0FA] px-3 py-1 rounded-full font-open-sans">
                           {implantParams.length} мм
                         </span>
                       </div>
-                      <div className="flex justify-between items-center pb-3 border-b border-gray-100">
-                        <span className="text-gray-600">Форма резьбы:</span>
-                        <span className="font-semibold text-gray-800 bg-blue-50 px-3 py-1 rounded-full">
+                      <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+                        <span className="text-gray-600 font-open-sans">Форма резьбы:</span>
+                        <span className="font-semibold text-[#000000] bg-[#E4F0FA] px-3 py-1 rounded-full font-open-sans">
                           {implantParams.threadType}
                         </span>
                       </div>
-                      <div className="flex justify-between items-center pb-3 border-b border-gray-100">
-                        <span className="text-gray-600">Шаг резьбы:</span>
-                        <span className="font-semibold text-gray-800 bg-blue-50 px-3 py-1 rounded-full">
+                      <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+                        <span className="text-gray-600 font-open-sans">Шаг резьбы:</span>
+                        <span className="font-semibold text-[#000000] bg-[#E4F0FA] px-3 py-1 rounded-full font-open-sans">
                           {implantParams.threadPitch}
                         </span>
                       </div>
-                      <div className="flex justify-between items-center pb-3 border-b border-gray-100">
-                        <span className="text-gray-600">Глубина резьбы:</span>
-                        <span className="font-semibold text-gray-800 bg-blue-50 px-3 py-1 rounded-full">
+                      <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+                        <span className="text-gray-600 font-open-sans">Глубина резьбы:</span>
+                        <span className="font-semibold text-[#000000] bg-[#E4F0FA] px-3 py-1 rounded-full font-open-sans">
                           {implantParams.threadDepth}
                         </span>
                       </div>
-                      <div className="flex justify-between items-center pb-3 border-b border-gray-100">
-                        <span className="text-gray-600">Плотность кости:</span>
-                        <span className="font-semibold text-gray-800 bg-blue-50 px-3 py-1 rounded-full">
+                      <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+                        <span className="text-gray-600 font-open-sans">Плотность кости:</span>
+                        <span className="font-semibold text-[#000000] bg-[#E4F0FA] px-3 py-1 rounded-full font-open-sans">
                           {implantParams.boneDensity}
                         </span>
                       </div>
-                      <div className="flex justify-between items-center pb-3 border-b border-gray-100">
-                        <span className="text-gray-600">
+                      <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+                        <span className="text-gray-600 font-open-sans">
                           Плотность по Хаунсфилду:
                         </span>
-                        <span className="font-semibold text-gray-800 bg-blue-50 px-3 py-1 rounded-full">
+                        <span className="font-semibold text-[#000000] bg-[#E4F0FA] px-3 py-1 rounded-full font-open-sans">
                           {implantParams.boneHU} HU
                         </span>
                       </div>
-                      <div className="flex justify-between items-center pb-3 border-b border-gray-100">
-                        <span className="text-gray-600">
+                      <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+                        <span className="text-gray-600 font-open-sans">
                           Жевательная нагрузка:
                         </span>
-                        <span className="font-semibold text-gray-800 bg-blue-50 px-3 py-1 rounded-full">
+                        <span className="font-semibold text-[#000000] bg-[#E4F0FA] px-3 py-1 rounded-full font-open-sans">
                           {implantParams.chewingLoad} кгс
                         </span>
                       </div>
-                      <div className="flex justify-between items-center pb-3 border-b border-gray-100">
-                        <span className="text-gray-600">
+                      <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+                        <span className="text-gray-600 font-open-sans">
                           Предельное напряжение:
                         </span>
-                        <span className="font-semibold text-gray-800 bg-blue-50 px-3 py-1 rounded-full">
+                        <span className="font-semibold text-[#000000] bg-[#E4F0FA] px-3 py-1 rounded-full font-open-sans">
                           {implantParams.maxStress} кг/мм²
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-600">
+                        <span className="text-gray-600 font-open-sans">
                           Площадь поверхности резьбы:
                         </span>
-                        <span className="font-semibold text-gray-800 bg-blue-50 px-3 py-1 rounded-full">
+                        <span className="font-semibold text-[#000000] bg-[#E4F0FA] px-3 py-1 rounded-full font-open-sans">
                           {implantParams.threadArea} мм²
                         </span>
                       </div>
@@ -499,12 +544,12 @@ const DentalImplantDashboard = () => {
 
                   {/* Visualization Area */}
                   <div>
-                    <div className="bg-white p-5 rounded-xl border border-gray-200/50 shadow-sm">
+                    <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
                       <div className="flex items-center mb-4">
-                        <div className="bg-purple-100 p-2 rounded-lg mr-3">
+                        <div className="bg-[#F0F7FC] p-2 rounded-lg mr-3">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6 text-purple-600"
+                            className="h-6 w-6 text-[#3091D1]"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -517,26 +562,14 @@ const DentalImplantDashboard = () => {
                             />
                           </svg>
                         </div>
-                        <h3 className="text-lg font-medium text-gray-800">
+                        <h3 className="text-lg font-medium text-[#000000] font-montserrat">
                           Визуализация имплантата
                         </h3>
                       </div>
                       <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-dashed border-gray-700/50 rounded-xl w-full h-64 flex items-center justify-center relative overflow-hidden">
-                        {/* <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 to-purple-900/10"></div>
-                        <div className="text-center z-10">
-                          <div className="text-gray-300 mb-2 text-lg font-medium">
-                            3D модель имплантата
-                          </div>
-                          <div className="text-sm text-gray-400">
-                            Сгенерированная по параметрам
-                          </div>
-                          <div className="mt-4 flex justify-center">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
-                          </div>
-                        </div> */}
                         <Image
                           src="/image_5.png"
-                          alt="image_1"
+                          alt="Implant visualization"
                           width={200}
                           height={200}
                           className="object-scale-down w-full"
@@ -545,7 +578,7 @@ const DentalImplantDashboard = () => {
                     </div>
 
                     <div className="mt-4">
-                      <button className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] flex items-center justify-center">
+                      <button className="w-full bg-[#006CB4] hover:bg-[#005A94] text-white py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-5 w-5 mr-2"
@@ -567,12 +600,12 @@ const DentalImplantDashboard = () => {
             )}
 
             {!selectedPatient && (
-              <div className="bg-gradient-to-br from-white to-blue-50 p-10 rounded-xl shadow-lg text-center border border-gray-200/50">
+              <div className="bg-white p-10 rounded-xl shadow-md text-center border border-gray-200">
                 <div className="max-w-md mx-auto">
-                  <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <div className="w-20 h-20 bg-[#E4F0FA] rounded-full flex items-center justify-center mx-auto mb-6">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-10 w-10 text-blue-600"
+                      className="h-10 w-10 text-[#006CB4]"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -585,15 +618,15 @@ const DentalImplantDashboard = () => {
                       />
                     </svg>
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                  <h2 className="text-2xl font-bold text-[#000000] mb-3 font-montserrat">
                     Добро пожаловать в систему планирования имплантатов
                   </h2>
-                  <p className="text-gray-600 mb-6 leading-relaxed">
+                  <p className="text-gray-600 mb-6 leading-relaxed font-open-sans">
                     Выберите пациента из списка слева для начала работы. Система
                     автоматически рассчитает оптимальные параметры дентального
                     имплантата на основе данных компьютерной томографии.
                   </p>
-                  <div className="inline-flex items-center text-blue-600 font-medium">
+                  <div className="inline-flex items-center text-[#006CB4] font-medium font-open-sans">
                     <span>Выберите пациента</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
