@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+import Image from "next/image";
 import { useState } from "react";
 
 // Define types for our data
@@ -26,7 +28,7 @@ const DentalImplantDashboard = () => {
   const [patients] = useState<Patient[]>([
     {
       id: 1,
-      fullName: "Иванов Иван Иванович",
+      fullName: "Козлова Илона Ивановна",
       visitDate: "2025-12-01",
       diagnosis: "Отсутствие зуба 16",
     },
@@ -55,9 +57,10 @@ const DentalImplantDashboard = () => {
 
   // CT scan images for patients
   const [ctImages] = useState<string[]>([
-    "/placeholder-ct1.jpg",
-    "/placeholder-ct2.jpg",
-    "/placeholder-ct3.jpg",
+    "/image_1.png",
+    "/image_2.jpg",
+    "/image_3.jpg",
+    "/image_4.jpg",
   ]);
 
   // Currently selected CT image
@@ -80,13 +83,13 @@ const DentalImplantDashboard = () => {
       diameter: 4.2, // mm
       length: 10.3, // mm
       threadType: "V-образная",
-      threadPitch: "0.7..1.2 мм",
-      threadDepth: "0.3-0.6 мм",
+      threadPitch: "1.2 мм",
+      threadDepth: "0.35-0.47 мм",
       boneDensity: "Кость D3",
-      boneHU: 720,
+      boneHU: 510,
       chewingLoad: 700, // kgf
-      maxStress: 4.18, // kg/mm²
-      threadArea: 32.5, // mm²
+      maxStress: 2.79, // kg/mm²
+      threadArea: 46.83, // mm²
     };
 
     setImplantParams(calculatedParams);
@@ -135,22 +138,20 @@ const DentalImplantDashboard = () => {
               <h2 className="text-lg font-semibold text-gray-800">
                 Список пациентов
               </h2>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </span>
-              </div>
+              <span className="flex items-center text-gray-400">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </span>
             </div>
 
             {/* Search bar */}
@@ -158,7 +159,7 @@ const DentalImplantDashboard = () => {
               <input
                 type="text"
                 placeholder="Поиск (ФИО, дата, диагноз)"
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                className="w-full pl-3 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -190,12 +191,9 @@ const DentalImplantDashboard = () => {
                   <div className="flex justify-between mt-1">
                     <p className="text-sm text-gray-600">{patient.visitDate}</p>
                     <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      {patient.diagnosis.split(" ")[0]}
+                      {patient.diagnosis}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-700 mt-1 truncate">
-                    {patient.diagnosis}
-                  </p>
                 </div>
               ))}
             </div>
@@ -283,20 +281,6 @@ const DentalImplantDashboard = () => {
                       >
                         <path
                           fillRule="evenodd"
-                          d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </button>
-                    <button className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
                           d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
                           clipRule="evenodd"
                         />
@@ -308,35 +292,15 @@ const DentalImplantDashboard = () => {
                 <div className="flex flex-col md:flex-row gap-6">
                   {/* Image viewer */}
                   <div className="flex-1">
-                    <div className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-dashed border-gray-700/50 rounded-xl w-full h-96 flex items-center justify-center relative overflow-hidden">
+                    <div className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-dashed border-gray-700/50 rounded-xl w-full h-[413px] flex items-center justify-center relative overflow-hidden">
                       {/* Placeholder for CT scan image */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 to-purple-900/10"></div>
-                      <div className="text-center z-10">
-                        <div className="text-gray-300 mb-2 text-lg font-medium">
-                          Снимок КТ/МРТ
-                        </div>
-                        <div className="text-sm text-gray-400">
-                          Пациент: {selectedPatient.fullName}
-                        </div>
-                        <div className="mt-4 flex justify-center">
-                          <div className="animate-pulse">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-12 w-12 text-gray-500"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1.5}
-                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
+                      <Image
+                        src={ctImages[currentImageIndex]}
+                        alt="image_1"
+                        width={200}
+                        height={200}
+                        className="object-scale-down w-full"
+                      ></Image>
                     </div>
 
                     {/* Image selection controls */}
@@ -397,7 +361,7 @@ const DentalImplantDashboard = () => {
                       Все снимки
                     </h3>
                     <div className="space-y-2">
-                      {ctImages.map((_, index) => (
+                      {ctImages.map((item, index) => (
                         <div
                           key={index}
                           className={`bg-white border-2 rounded-lg cursor-pointer p-2 shadow-sm transition-all duration-200 ${
@@ -407,9 +371,12 @@ const DentalImplantDashboard = () => {
                           }`}
                           onClick={() => setCurrentImageIndex(index)}
                         >
-                          <div className="bg-gray-200 border-2 border-dashed border-gray-300 rounded w-full h-16 flex items-center justify-center text-xs text-gray-500">
-                            Снимок {index + 1}
-                          </div>
+                          <Image
+                            src={item}
+                            alt="image_1"
+                            width={680}
+                            height={500}
+                          ></Image>
                         </div>
                       ))}
                     </div>
@@ -555,7 +522,7 @@ const DentalImplantDashboard = () => {
                         </h3>
                       </div>
                       <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-dashed border-gray-700/50 rounded-xl w-full h-64 flex items-center justify-center relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 to-purple-900/10"></div>
+                        {/* <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 to-purple-900/10"></div>
                         <div className="text-center z-10">
                           <div className="text-gray-300 mb-2 text-lg font-medium">
                             3D модель имплантата
@@ -566,7 +533,14 @@ const DentalImplantDashboard = () => {
                           <div className="mt-4 flex justify-center">
                             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
                           </div>
-                        </div>
+                        </div> */}
+                        <Image
+                          src="/image_5.png"
+                          alt="image_1"
+                          width={200}
+                          height={200}
+                          className="object-scale-down w-full"
+                        ></Image>
                       </div>
                     </div>
 
