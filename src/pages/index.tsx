@@ -36,7 +36,7 @@ const DentalImplantDashboard = () => {
       id: 2,
       fullName: "Петрова Мария Сергеевна",
       visitDate: "2025-12-05",
-      diagnosis: "Отсутствие зубов 35, 36",
+      diagnosis: "Отсутствие зуба 35",
     },
     {
       id: 3,
@@ -202,7 +202,7 @@ const DentalImplantDashboard = () => {
                   </div>
                   <div className="flex justify-between mt-1">
                     <p className="text-sm text-gray-600">{patient.visitDate}</p>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                       {patient.diagnosis}
                     </span>
                   </div>
@@ -256,7 +256,7 @@ const DentalImplantDashboard = () => {
                 <div className="mt-6 flex justify-end">
                   <button
                     onClick={calculateImplantParams}
-                    className="bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 text-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105 flex items-center"
+                    className="bg-gradient-to-r bg-[#006CB4] hover:bg-[#005A94] text-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105 flex items-center"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -405,7 +405,7 @@ const DentalImplantDashboard = () => {
                     САПР имплантата
                   </h2>
                   <div className="flex space-x-2">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
                       Рассчитано
                     </span>
                   </div>
@@ -513,10 +513,10 @@ const DentalImplantDashboard = () => {
                   <div>
                     <div className="bg-white p-5 rounded-xl border border-gray-200/50 shadow-sm">
                       <div className="flex items-center mb-4">
-                        <div className="bg-purple-100 p-2 rounded-lg mr-3">
+                        <div className="bg-blue-100 text-blue-800 p-2 rounded-lg mr-3">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6 text-purple-600"
+                            className="h-6 w-6 "
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -557,7 +557,7 @@ const DentalImplantDashboard = () => {
                     </div>
 
                     <div className="mt-4">
-                      <button className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] flex items-center justify-center">
+                      <button className="w-full bg-gradient-to-r bg-[#006CB4] hover:bg-[#005A94] text-white py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] flex items-center justify-center">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-5 w-5 mr-2"
