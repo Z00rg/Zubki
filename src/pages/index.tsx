@@ -299,7 +299,7 @@ const DentalImplantDashboard = () => {
                         alt="image_1"
                         width={200}
                         height={200}
-                        className="object-scale-down w-full"
+                        className="object-scale-down w-full max-h-4/5"
                       ></Image>
                     </div>
 
