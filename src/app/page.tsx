@@ -438,6 +438,13 @@ const DentalImplantDashboard = () => {
                       </h3>
                     </div>
                     <div className="space-y-4">
+                      <Image
+                          src="/image_5.png"
+                          alt="image_1"
+                          width={350}
+                          height={200}
+                          className="object-scale-down w-full"
+                      ></Image>
                       <div className="flex justify-between items-center pb-3 border-b border-gray-100">
                         <span className="text-gray-600">
                           Диаметр имплантата:
@@ -535,7 +542,7 @@ const DentalImplantDashboard = () => {
                           Визуализация имплантата
                         </h3>
                       </div>
-                      <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-dashed border-gray-700/50 rounded-xl w-full h-64 flex items-center justify-center relative overflow-hidden">
+                      <div className="bg-gradient-to-br  border-2 border-dashed border-gray-700/50 rounded-xl w-full h-128 flex items-center justify-center relative overflow-hidden">
                         {/* <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 to-purple-900/10"></div>
                         <div className="text-center z-10">
                           <div className="text-gray-300 mb-2 text-lg font-medium">
@@ -549,31 +556,31 @@ const DentalImplantDashboard = () => {
                           </div>
                         </div> */}
                         <Image
-                          src="/image_5.png"
+                          src="/image_6.png"
                           alt="image_1"
-                          width={200}
-                          height={200}
+                          width={400}
+                          height={500}
                           className="object-scale-down w-full"
                         ></Image>
                       </div>
                     </div>
 
                     <div className="mt-4">
-                      <button className="w-full bg-gradient-to-r bg-[#006CB4] hover:bg-[#005A94] text-white py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] flex items-center justify-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5 mr-2"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        Экспортировать модель
-                      </button>
+                      {/*<button className="w-full bg-gradient-to-r bg-[#006CB4] hover:bg-[#005A94] text-white py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] flex items-center justify-center">*/}
+                      {/*  <svg*/}
+                      {/*    xmlns="http://www.w3.org/2000/svg"*/}
+                      {/*    className="h-5 w-5 mr-2"*/}
+                      {/*    viewBox="0 0 20 20"*/}
+                      {/*    fill="currentColor"*/}
+                      {/*  >*/}
+                      {/*    <path*/}
+                      {/*      fillRule="evenodd"*/}
+                      {/*      d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"*/}
+                      {/*      clipRule="evenodd"*/}
+                      {/*    />*/}
+                      {/*  </svg>*/}
+                      {/*  Экспортировать модель*/}
+                      {/*</button>*/}
                     </div>
                   </div>
                 </div>
