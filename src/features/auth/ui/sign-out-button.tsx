@@ -6,10 +6,10 @@ export function SignOutButton({className}: { className?: string }) {
 
     return (
         <button
-            className={clsx(className, "ml-auto text-rose-500 hover:text-rose-700 text-[20px] cursor-pointer")}
+            className={clsx(className, "bg-[#006CB4] hover:bg-[#005A94] text-white px-4 py-2 rounded-lg text-sm transition-all duration-200")}
             onClick={() => signOut({})}
         >
-            Выйти из аккаунта
+            Выход
         </button>
     );
 }

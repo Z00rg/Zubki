@@ -4,6 +4,7 @@
 import Image from "next/image";
 import {useState} from "react";
 import {useProfileQuery} from "@/entities/profile";
+import {SignOutButton} from "@/features/auth";
 
 // Define types for our data
 interface Patient {
@@ -144,10 +145,7 @@ export default function DentalImplantDashboard() {
                             </div>
                             <span className="text-[#000000] font-medium">{profileInfo?.surname} {profileInfo?.name} {profileInfo?.patronymic}</span>
                         </div>
-                        <button
-                            className="bg-[#006CB4] hover:bg-[#005A94] text-white px-4 py-2 rounded-lg text-sm transition-all duration-200">
-                            Выход
-                        </button>
+                        <SignOutButton/>
                     </div>
                 </div>
             </header>
