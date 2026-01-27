@@ -5,13 +5,19 @@ import Image from "next/image";
 import {useState} from "react";
 import {useProfileQuery} from "@/entities/profile";
 import {SignOutButton} from "@/features/auth";
+import dynamic from "next/dynamic";
 
 // Define types for our data
 interface Patient {
     id: number;
     fullName: string;
-    visitDate: string;
-    diagnosis: string;
+    birthdayDate: string;
+    gender: string;
+}
+
+interface Appointment {
+    id: number;
+    date: string;
 }
 
 interface ImplantParams {
@@ -27,53 +33,64 @@ interface ImplantParams {
     threadArea: number;
 }
 
+const DicomViewer = dynamic(
+    () => import("@/shared/ui/DicomViewer"),
+    { ssr: false }
+);
+
 export default function DentalImplantDashboard() {
 
     const profileQuery = useProfileQuery();
 
     const profileInfo = profileQuery?.data;
 
+    // const [isAddPatientModalOpen, setIsAddPatientModalOpen] = useState(false);
+
     // Mock patient data
     const [patients] = useState<Patient[]>([
         {
             id: 1,
             fullName: "Козлова Илона Ивановна",
-            visitDate: "2025-12-01",
-            diagnosis: "Отсутствие зуба 16",
+            birthdayDate: "2001-12-09",
+            gender: "Женский",
         },
         {
             id: 2,
             fullName: "Петрова Мария Сергеевна",
-            visitDate: "2025-12-05",
-            diagnosis: "Отсутствие зуба 35",
+            birthdayDate: "2001-10-02",
+            gender: "Женский",
         },
         {
             id: 3,
             fullName: "Сидоров Алексей Петрович",
-            visitDate: "2025-12-10",
-            diagnosis: "Периодонтит 24",
+            birthdayDate: "2001-11-05",
+            gender: "Мужской",
         },
         {
             id: 4,
             fullName: "Козлова Екатерина Андреевна",
-            visitDate: "2025-12-12",
-            diagnosis: "Отсутствие зуба 48",
+            birthdayDate: "2001-07-08",
+            gender: "Женский",
+        },
+    ]);
+
+    // Appointment data
+    const [appointment] = useState<Appointment[]>([
+        {
+            id: 1,
+            date: "2025-12-09",
+        },
+        {
+            id: 2,
+            date: "2025-10-02",
         },
     ]);
 
     // Selected patient state
     const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
 
-    // CT scan images for patients
-    const [ctImages] = useState<string[]>([
-        "/image_1.png",
-        "/image_2.jpg",
-        "/image_3.jpg",
-        "/image_4.jpg",
-    ]);
-
-    // Currently selected CT image
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    // Selected appointment state
+    const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
 
     // Search term for filtering patients
     const [searchTerm, setSearchTerm] = useState("");
@@ -107,9 +124,7 @@ export default function DentalImplantDashboard() {
     // Filter patients based on search term
     const filteredPatients = patients.filter(
         (patient) =>
-            patient.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            patient.diagnosis.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            patient.visitDate.includes(searchTerm)
+            patient.fullName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
@@ -143,7 +158,8 @@ export default function DentalImplantDashboard() {
                                 className="w-10 h-10 rounded-full bg-[#006CB4] flex items-center justify-center text-white font-bold">
                                 Д
                             </div>
-                            <span className="text-[#000000] font-medium">{profileInfo?.surname} {profileInfo?.name} {profileInfo?.patronymic}</span>
+                            <span
+                                className="text-[#000000] font-medium">{profileInfo?.surname} {profileInfo?.name} {profileInfo?.patronymic}</span>
                         </div>
                         <SignOutButton/>
                     </div>
@@ -160,19 +176,19 @@ export default function DentalImplantDashboard() {
                                 Список пациентов
                             </h2>
                             <span className="flex items-center text-gray-400">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                >
-                  <path
-                      fillRule="evenodd"
-                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                      clipRule="evenodd"
-                  />
-                </svg>
-              </span>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                            >
+                              <path
+                                  fillRule="evenodd"
+                                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                  clipRule="evenodd"
+                              />
+                            </svg>
+                          </span>
                         </div>
 
                         {/* Search bar */}
@@ -191,7 +207,7 @@ export default function DentalImplantDashboard() {
                             {filteredPatients.map((patient) => (
                                 <div
                                     key={patient.id}
-                                    className={`p-3 border rounded-lg cursor-pointer transition-all duration-200 transform hover:translate-x-1 ${
+                                    className={`p-3 border rounded-lg cursor-pointer transition-all duration-200   ${
                                         selectedPatient?.id === patient.id
                                             ? "border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50 shadow-inner"
                                             : "border-gray-200 hover:bg-gray-50"
@@ -201,24 +217,28 @@ export default function DentalImplantDashboard() {
                                         setImplantParams(null); // Reset implant params when changing patient
                                     }}
                                 >
-                                    <div className="flex justify-between items-start">
+                                    <div className="flex justify-between items-start mb-3">
                                         <h3 className="font-medium text-gray-800">
                                             {patient.fullName}
                                         </h3>
-                                        <span
-                                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      #{patient.id}
-                    </span>
                                     </div>
                                     <div className="flex justify-between mt-1">
-                                        <p className="text-sm text-gray-600">{patient.visitDate}</p>
+                                        <p className="text-sm text-gray-600">{patient.birthdayDate}</p>
                                         <span
                                             className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      {patient.diagnosis}
-                    </span>
+                                            {patient.gender}
+                                        </span>
                                     </div>
                                 </div>
                             ))}
+                            <div
+                                className="flex items-center justify-center p-3 rounded-lg text-4xl font-medium bg-blue-100 text-blue-800 cursor-pointer hover:border hover:border-blue-500 "
+                                onClick={() => {
+                                    alert("Формочка добавления пациента")
+                                }}
+                            >
+                                +
+                            </div>
                         </div>
                     </div>
 
@@ -233,10 +253,6 @@ export default function DentalImplantDashboard() {
                                         Карточка пациента
                                     </h2>
                                     <div className="flex space-x-2">
-                    <span
-                        className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                      Активен
-                    </span>
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-3 gap-6">
@@ -250,47 +266,67 @@ export default function DentalImplantDashboard() {
                                     </div>
                                     <div className="bg-white p-4 rounded-lg border border-gray-200/50 shadow-sm">
                                         <label className="block text-sm font-medium text-gray-600 mb-1">
-                                            Дата обращения
+                                            Дата рождения
                                         </label>
                                         <p className="mt-1 text-lg font-semibold text-gray-800">
-                                            {selectedPatient.visitDate}
+                                            {selectedPatient.birthdayDate}
                                         </p>
                                     </div>
                                     <div className="bg-white p-4 rounded-lg border border-gray-200/50 shadow-sm">
                                         <label className="block text-sm font-medium text-gray-600 mb-1">
-                                            Диагноз
+                                            Пол
                                         </label>
                                         <p className="mt-1 text-lg font-semibold text-gray-800">
-                                            {selectedPatient.diagnosis}
+                                            {selectedPatient.gender}
                                         </p>
                                     </div>
                                 </div>
-
-                                <div className="mt-6 flex justify-end">
-                                    <button
-                                        onClick={calculateImplantParams}
-                                        className="bg-gradient-to-r bg-[#006CB4] hover:bg-[#005A94] text-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105 flex items-center"
-                                    >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-5 w-5 mr-2"
-                                            viewBox="0 0 20 20"
-                                            fill="currentColor"
+                            </div>
+                        )}
+                        {/* Список приемов */}
+                        {selectedPatient && (
+                            <div
+                                className="bg-gradient-to-r from-white to-gray-50 p-6 rounded-xl shadow-lg border border-gray-200/50">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h2 className="text-xl font-semibold text-gray-800">
+                                        Список приемов
+                                    </h2>
+                                </div>
+                                <div className="grid grid-cols-3 gap-6">
+                                    {appointment.map((appoint) => (
+                                        <div
+                                            key={appoint.id}
+                                            className={`p-3 border rounded-lg cursor-pointer transition-all duration-200   ${
+                                                selectedAppointment?.id === appoint.id
+                                                    ? "border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50 shadow-inner"
+                                                    : "border-gray-200 hover:bg-gray-50"
+                                            }`}
+                                            onClick={() => {
+                                                setSelectedAppointment(appoint);
+                                                setImplantParams(null); // Reset implant params when changing patient
+                                                calculateImplantParams();
+                                            }}
                                         >
-                                            <path
-                                                fillRule="evenodd"
-                                                d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z"
-                                                clipRule="evenodd"
-                                            />
-                                        </svg>
-                                        Рассчитать параметры имплантата
-                                    </button>
+                                            <div className="flex justify-between items-start mb-3">
+                                                <h3 className="font-medium text-gray-800">
+                                                    Прием от {appoint.date}
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <div
+                                        className="flex items-center justify-center p-3 rounded-lg text-4xl font-medium bg-blue-100 text-blue-800 cursor-pointer hover:border hover:border-blue-500 "
+                                        onClick={() => {
+                                            alert("Формочка добавления приема")
+                                        }}
+                                    >
+                                        +
+                                    </div>
                                 </div>
                             </div>
                         )}
-
                         {/* CT/MRI Scan Viewer */}
-                        {selectedPatient && (
+                        {selectedPatient && implantParams && (
                             <div
                                 className="bg-gradient-to-r from-white to-gray-50 p-6 rounded-xl shadow-lg border border-gray-200/50">
                                 <div className="flex items-center justify-between mb-4">
@@ -316,101 +352,7 @@ export default function DentalImplantDashboard() {
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col md:flex-row gap-6">
-                                    {/* Image viewer */}
-                                    <div className="flex-1">
-                                        <div
-                                            className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-dashed border-gray-700/50 rounded-xl w-full h-[413px] flex items-center justify-center relative overflow-hidden">
-                                            {/* Placeholder for CT scan image */}
-                                            <Image
-                                                src={ctImages[currentImageIndex]}
-                                                alt="image_1"
-                                                width={200}
-                                                height={200}
-                                                className="object-scale-down w-full max-h-4/5"
-                                            ></Image>
-                                        </div>
-
-                                        {/* Image selection controls */}
-                                        <div
-                                            className="mt-4 flex justify-between items-center bg-gray-50 p-3 rounded-lg">
-                                            <button
-                                                className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg disabled:opacity-50 transition-colors duration-200 flex items-center"
-                                                disabled={currentImageIndex === 0}
-                                                onClick={() =>
-                                                    setCurrentImageIndex(currentImageIndex - 1)
-                                                }
-                                            >
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    className="h-4 w-4 mr-1"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                                Назад
-                                            </button>
-
-                                            <div className="text-sm text-gray-600 font-medium">
-                                                Снимок {currentImageIndex + 1} из {ctImages.length}
-                                            </div>
-
-                                            <button
-                                                className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg disabled:opacity-50 transition-colors duration-200 flex items-center"
-                                                disabled={currentImageIndex === ctImages.length - 1}
-                                                onClick={() =>
-                                                    setCurrentImageIndex(currentImageIndex + 1)
-                                                }
-                                            >
-                                                Вперед
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    className="h-4 w-4 ml-1"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    {/* Image thumbnails */}
-                                    <div className="w-32">
-                                        <h3 className="text-sm font-medium mb-2 text-gray-700">
-                                            Все снимки
-                                        </h3>
-                                        <div className="space-y-2">
-                                            {ctImages.map((item, index) => (
-                                                <div
-                                                    key={index}
-                                                    className={`bg-white border-2 rounded-lg cursor-pointer p-2 shadow-sm transition-all duration-200 ${
-                                                        currentImageIndex === index
-                                                            ? "border-blue-500 ring-2 ring-blue-200 shadow-md"
-                                                            : "border-gray-200 hover:border-gray-300"
-                                                    }`}
-                                                    onClick={() => setCurrentImageIndex(index)}
-                                                >
-                                                    <Image
-                                                        src={item}
-                                                        alt="image_1"
-                                                        width={680}
-                                                        height={500}
-                                                    ></Image>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
+                                <DicomViewer src="/KT" />
                             </div>
                         )}
 
@@ -423,10 +365,10 @@ export default function DentalImplantDashboard() {
                                         САПР имплантата
                                     </h2>
                                     <div className="flex space-x-2">
-                    <span
-                        className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                      Рассчитано
-                    </span>
+                                        <span
+                                            className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                          Рассчитано
+                                        </span>
                                     </div>
                                 </div>
 
