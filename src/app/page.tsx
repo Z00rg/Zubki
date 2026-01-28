@@ -6,8 +6,9 @@ import {useState} from "react";
 import {useProfileQuery} from "@/entities/profile";
 import {SignOutButton} from "@/features/auth";
 import dynamic from "next/dynamic";
-import {PatientList} from "@/features/patient/ui/patientList";
 import {PatientCard} from "@/shared/ui/PatientCard";
+import {PatientCasesList, PatientList} from "@/features/patient";
+import {PatientCase} from "@/shared/api/patientApi";
 
 // Define types for our data
 type Patient = {
@@ -15,11 +16,6 @@ type Patient = {
     fio: string;
     birth_date: string;
     gender: 0 | 1;
-}
-
-type Appointment = {
-    id: number;
-    date: string;
 }
 
 type ImplantParams = {
@@ -46,53 +42,25 @@ export default function DentalImplantDashboard() {
 
     const profileInfo = profileQuery?.data;
 
-    // const [isAddPatientModalOpen, setIsAddPatientModalOpen] = useState(false);
-
-    // Appointment data
-    const [appointment] = useState<Appointment[]>([
-        {
-            id: 1,
-            date: "2025-12-09",
-        },
-        {
-            id: 2,
-            date: "2025-10-02",
-        },
-    ]);
-
     // Selected patient state
     const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
 
-    // Selected appointment state
-    const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+    const [selectedCase, setSelectedCase] = useState<PatientCase | null>(null);
 
     // Search term for filtering patients
     const [searchTerm, setSearchTerm] = useState("");
 
-    // Calculated implant parameters
-    const [implantParams, setImplantParams] = useState<ImplantParams | null>(
-        null
-    );
-
-    // Calculate implant parameters based on algorithm
-    const calculateImplantParams = () => {
-        if (!selectedPatient) return;
-
-        // Mock calculations based on the algorithm described
-        const calculatedParams: ImplantParams = {
-            diameter: 4.2, // mm
-            length: 10.3, // mm
-            threadType: "V-образная",
-            threadPitch: "1.2 мм",
-            threadDepth: "0.35-0.47 мм",
-            boneDensity: "Кость D3",
-            boneHU: 510,
-            chewingLoad: 700, // kgf
-            maxStress: 2.79, // kg/mm²
-            threadArea: 46.83, // mm²
-        };
-
-        setImplantParams(calculatedParams);
+    const implantParams: ImplantParams = {
+        diameter: 4.2, // mm
+        length: 10.3, // mm
+        threadType: "V-образная",
+        threadPitch: "1.2 мм",
+        threadDepth: "0.35-0.47 мм",
+        boneDensity: "Кость D3",
+        boneHU: 510,
+        chewingLoad: 700, // kgf
+        maxStress: 2.79, // kg/mm²
+        threadArea: 46.83, // mm²
     };
 
 
@@ -182,50 +150,10 @@ export default function DentalImplantDashboard() {
                         {selectedPatient && <PatientCard patient={selectedPatient}/>}
 
                         {/* Appointment list */}
-                        {selectedPatient && (
-                            <div
-                                className="bg-gradient-to-r from-white to-gray-50 p-6 rounded-xl shadow-lg border border-gray-200/50">
-                                <div className="flex items-center justify-between mb-4">
-                                    <h2 className="text-xl font-semibold text-gray-800">
-                                        Список приемов
-                                    </h2>
-                                </div>
-                                <div className="grid grid-cols-3 gap-6">
-                                    {appointment.map((appoint) => (
-                                        <div
-                                            key={appoint.id}
-                                            className={`p-3 border rounded-lg cursor-pointer transition-all duration-200   ${
-                                                selectedAppointment?.id === appoint.id
-                                                    ? "border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50 shadow-inner"
-                                                    : "border-gray-200 hover:bg-gray-50"
-                                            }`}
-                                            onClick={() => {
-                                                setSelectedAppointment(appoint);
-                                                setImplantParams(null); // Reset implant params when changing patient
-                                                calculateImplantParams();
-                                            }}
-                                        >
-                                            <div className="flex justify-between items-start mb-3">
-                                                <h3 className="font-medium text-gray-800">
-                                                    Прием от {appoint.date}
-                                                </h3>
-                                            </div>
-                                        </div>
-                                    ))}
-                                    <div
-                                        className="flex items-center justify-center p-3 rounded-lg text-4xl font-medium bg-blue-100 text-blue-800 cursor-pointer hover:border hover:border-blue-500 "
-                                        onClick={() => {
-                                            alert("Формочка добавления приема")
-                                        }}
-                                    >
-                                        +
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                        {selectedPatient && <PatientCasesList idPatient={selectedPatient?.id} onOpenCase={setSelectedCase}/>}
 
                         {/* CT/MRI Scan Viewer */}
-                        {selectedPatient && implantParams && (
+                        {selectedCase && (
                             <div
                                 className="bg-gradient-to-r from-white to-gray-50 p-6 rounded-xl shadow-lg border border-gray-200/50">
                                 <div className="flex items-center justify-between mb-4">
@@ -258,7 +186,7 @@ export default function DentalImplantDashboard() {
                         )}
 
                         {/* CAD/CAM Implant Design Section */}
-                        {selectedPatient && implantParams && (
+                        {selectedCase && implantParams && (
                             <div
                                 className="bg-gradient-to-r from-white to-gray-50 p-6 rounded-xl shadow-lg border border-gray-200/50">
                                 <div className="flex items-center justify-between mb-4">

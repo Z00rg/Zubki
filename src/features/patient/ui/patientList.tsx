@@ -1,9 +1,9 @@
 import {UiModal} from "@/shared/ui/UiModal";
 import {Button} from "@/shared/ui/Button";
-import {CreatePatientForm} from "@/features/patient/ui/createPatientForm";
 import {useGetPatientList} from "@/features/patient/model/useGetPatientList";
 import {Patient} from "@/shared/api/patientApi";
 import {PatientCardSkeleton} from "@/shared/ui/Skeleton";
+import {CreatePatientForm} from "@/features/patient";
 
 export function PatientList({ onOpenPatient }: { onOpenPatient: (patient: Patient) => void }) {
 

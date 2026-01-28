@@ -29,3 +29,14 @@ export function PatientCardSkeleton() {
         </div>
     );
 }
+
+export function PatientCaseCardSkeleton() {
+    return (
+        <div className="p-3 border border-gray-200 rounded-lg">
+            <div className="flex flex-col items-start mb-3 space-y-2">
+                <Skeleton className="h-5 w-32" />
+                <Skeleton className="h-5 w-24 rounded-full" />
+            </div>
+        </div>
+    );
+}

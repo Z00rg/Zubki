@@ -5,7 +5,6 @@ import {useForm} from "react-hook-form";
 export function useCreatePatient({ closeModal }: { closeModal: () => void }) {
 
     const {
-        register,
         handleSubmit,
         control,
         formState: { errors, isSubmitting }
@@ -26,11 +25,9 @@ export function useCreatePatient({ closeModal }: { closeModal: () => void }) {
     };
 
     return {
-        register,
         control,
         errors,
         handleSubmit: handleSubmit(onSubmit),
-        createPatientMutation,
         isSubmitting: isSubmitting || createPatientMutation.isPending,
     }
 }
