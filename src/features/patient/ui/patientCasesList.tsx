@@ -2,7 +2,6 @@ import {useGetPatientCasesList} from "@/features/patient/model/useGetPatientCase
 import {PatientCaseCardSkeleton} from "@/shared/ui/Skeleton";
 import {Button} from "@/shared/ui/Button";
 import {PatientCase} from "@/shared/api/patientApi";
-import {CreatePatientForm} from "@/features/patient";
 import {UiModal} from "@/shared/ui/UiModal";
 import {CreateCaseForm} from "@/features/case/ui/createCaseForm";
 
@@ -71,9 +70,20 @@ export function PatientCasesList({ idPatient, onOpenCase }: PatientCasesListProp
                     <h3 className="text-lg font-medium text-gray-900 mb-1">
                         Приемы не найдены
                     </h3>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 mb-12">
                         Добавьте первый прием, нажав кнопку ниже
                     </p>
+                    <UiModal button={
+                        <Button
+                            variant="secondary"
+                            className="w-1/2 h-23 text-4xl text-blue-800 font-medium bg-blue-100 hover:border hover:border-blue-500 hover:bg-blue-100">
+                            +
+                        </Button>
+                    }>
+                        {({close}) => (
+                            <CreateCaseForm closeModal={close}/>
+                        )}
+                    </UiModal>
                 </div>
             )}
 

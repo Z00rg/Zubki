@@ -1,6 +1,7 @@
 import {useMutation, useQuery} from "@tanstack/react-query";
 import {CreatePatient, patientApi, UpdatePatient} from "@/shared/api/patientApi";
 import {queryClient} from "@/shared/api/query-client";
+import {queue} from "@/shared/ui/Toast";
 
 const patientListKey = ["patient-list"];
 const patientCasesListKey = ["patient-cases-list"];
@@ -37,6 +38,15 @@ export function useCreatePatientMutation({ onSuccessActions }: { onSuccessAction
         onSuccess: () => {
             queryClient.invalidateQueries();
             onSuccessActions?.forEach(onSuccessAction => onSuccessAction());
+
+            // Показываем успешный тост
+            queue.add({
+                title: 'Пациент добавлен',
+                description: 'Пациент успешно добавлен в систему',
+                type: 'success'
+            }, {
+                timeout: 3000
+            });
         },
         onError: (error) => {
             console.error("Ошибка при добавлении пациента:", error);
@@ -52,6 +62,15 @@ export function useUpdatePatientMutation({ onSuccessActions = [] }: { onSuccessA
         onSuccess: () => {
             queryClient.invalidateQueries();
             onSuccessActions.forEach(onSuccessAction => onSuccessAction());
+
+            // Показываем успешный тост
+            queue.add({
+                title: 'Пациент обновлён',
+                description: 'Данные пациента успешно обновлены',
+                type: 'success'
+            }, {
+                timeout: 3000
+            });
         },
         onError: (error) => {
             console.error("Ошибка при редактировании пациента:", error);
