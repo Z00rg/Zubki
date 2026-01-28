@@ -1,47 +1,86 @@
 import {useCreatePatient} from "@/features/patient/model/useCreatePatient";
 import {Button} from "@/shared/ui/Button";
-import {Select, SelectItem} from "@/shared/ui/Select";
-import {DatePicker} from "@/shared/ui/DataPicker";
+import {SelectItem} from "@/shared/ui/Select";
 import {Form} from "@/shared/ui/Form";
-import {TextField} from "@/shared/ui/TextField";
+import {TextFieldController, DatePickerController, SelectController} from "@/shared/ui/FormFields";
+import {CreatePatient} from "@/shared/api/patientApi";
 
 export function CreatePatientForm({closeModal}: { closeModal: () => void }) {
 
-    const {createPatientMutation, handleSubmit, register} = useCreatePatient({closeModal})
+    const {
+        control,
+        errors,
+        handleSubmit,
+        isSubmitting
+    } = useCreatePatient({closeModal})
 
     return (
         <div>
             <h3 className="text-xl font-bold mb-4">Добавить пациента</h3>
-            <Form className="space-y-4">
+            <Form className="space-y-4" onSubmit={handleSubmit}>
 
-                <TextField isRequired name="surname" label="Фамилия" placeholder="Введите свою фамилию" />
+                <TextFieldController<CreatePatient>
+                    name="surname"
+                    control={control}
+                    errors={errors}
+                    label="Фамилия"
+                    placeholder="Введите свою фамилию"
+                    isRequired
+                />
 
-                <TextField isRequired name="name" label="Имя" placeholder="Введите свое имя" />
+                <TextFieldController<CreatePatient>
+                    name="name"
+                    control={control}
+                    errors={errors}
+                    label="Имя"
+                    placeholder="Введите свое имя"
+                    isRequired
+                />
 
-                <TextField isRequired name="patronymic" label="Отчество" placeholder="Введите свое отчество" />
+                <TextFieldController<CreatePatient>
+                    name="patronymic"
+                    control={control}
+                    errors={errors}
+                    label="Отчество"
+                    placeholder="Введите свое отчество"
+                    isRequired
+                />
 
-                <DatePicker label="Дата рождения" name="birth_date" isRequired/>
+                <DatePickerController<CreatePatient>
+                    name="birth_date"
+                    control={control}
+                    errors={errors}
+                    label="Дата рождения"
+                    isRequired
+                />
 
-                <Select form="gender" name="gender" isRequired label="Выберите пол">
-                    <SelectItem id={0}>Мужской</SelectItem>
-                    <SelectItem id={1}>Женский</SelectItem>
-                </Select>
+                <SelectController<CreatePatient>
+                    name="gender"
+                    control={control}
+                    errors={errors}
+                    label="Выберите пол"
+                    placeholder="Выберите пол"
+                    isRequired
+                >
+                    <SelectItem id="0">Мужской</SelectItem>
+                    <SelectItem id="1">Женский</SelectItem>
+                </SelectController>
 
                 <div className="flex w-full justify-end gap-3">
                     <Button
-                        slot="close"
+                        onPress={closeModal}
                         variant="secondary"
-                        isDisabled={createPatientMutation.isPending}
+                        isDisabled={isSubmitting}
                     >
                         Отмена
                     </Button>
 
                     <Button
                         type="submit"
-                        isPending={createPatientMutation.isPending}
-                        isDisabled={createPatientMutation.isPending}
+                        isPending={isSubmitting}
+                        isDisabled={isSubmitting}
                     >
-                        {createPatientMutation.isPending ? "" : "Добавить пациента"}
+                        {isSubmitting ? "" : "Добавить пациента"}
                     </Button>
                 </div>
 

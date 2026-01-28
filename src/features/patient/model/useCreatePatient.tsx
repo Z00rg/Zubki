@@ -4,7 +4,20 @@ import {useForm} from "react-hook-form";
 
 export function useCreatePatient({ closeModal }: { closeModal: () => void }) {
 
-    const { register, handleSubmit } = useForm<CreatePatient>();
+    const {
+        register,
+        handleSubmit,
+        control,
+        formState: { errors, isSubmitting }
+    } = useForm<CreatePatient>({
+        defaultValues: {
+            name: "",
+            surname: "",
+            patronymic: "",
+            birth_date: "",
+            gender: 0,
+        }
+    });
 
     const createPatientMutation = useCreatePatientMutation({ onSuccessActions: [closeModal] });
 
@@ -14,7 +27,10 @@ export function useCreatePatient({ closeModal }: { closeModal: () => void }) {
 
     return {
         register,
+        control,
+        errors,
         handleSubmit: handleSubmit(onSubmit),
         createPatientMutation,
+        isSubmitting: isSubmitting || createPatientMutation.isPending,
     }
 }

@@ -4,9 +4,7 @@ import {createInstance, RequestOptions} from "./api-instance";
 
 export type Patient = {
     id: number;
-    name: string;
-    surname: string;
-    patronymic: string;
+    fio: string;
     birth_date: string;
     gender: 0 | 1;
 }
@@ -24,7 +22,7 @@ export type UpdatePatient = Partial<CreatePatient>
 // API
 
 export const getPatientList = (options?: RequestOptions) =>
-    createInstance<Patient>(
+    createInstance<Patient[]>(
         {url: `/patients/`, method: "GET"},
         options
     );

@@ -245,7 +245,7 @@ export default function DicomViewerSimple({ src }: Props) {
 
                 {/* Loader */}
                 {isLoading && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70">
+                    <div className="w-124 h-124 flex items-center justify-center bg-black bg-opacity-70">
                         <div className="text-white text-lg flex flex-col items-center gap-2">
                             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
                             <div>Загрузка...</div>

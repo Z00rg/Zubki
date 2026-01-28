@@ -6,18 +6,16 @@ import {useState} from "react";
 import {useProfileQuery} from "@/entities/profile";
 import {SignOutButton} from "@/features/auth";
 import dynamic from "next/dynamic";
-import {UiModal} from "@/shared/ui/UiModal";
-import {CreatePatientForm} from "@/features/patient/ui/createPatientForm";
+import {PatientList} from "@/features/patient/ui/patientList";
+import {PatientCard} from "@/shared/ui/PatientCard";
 import {Button} from "@/shared/ui/Button";
 
 // Define types for our data
 type Patient = {
     id: number;
-    name: string;
-    surname: string;
-    patronymic: string;
+    fio: string;
     birth_date: string;
-    gender: string;
+    gender: 0 | 1;
 }
 
 type Appointment = {
@@ -60,26 +58,6 @@ export default function DentalImplantDashboard() {
     const profileInfo = profileQuery?.data;
 
     // const [isAddPatientModalOpen, setIsAddPatientModalOpen] = useState(false);
-
-    // Mock patient data
-    const [patients] = useState<Patient[]>([
-        {
-            id: 1,
-            name: "Козлова",
-            surname: "Илона",
-            patronymic: "Ивановна",
-            birth_date: "2001-12-09",
-            gender: "Женский",
-        },
-        {
-            id: 2,
-            name: "Петрова",
-            surname: "Мария",
-            patronymic: "Сергеевна",
-            birth_date: "2001-10-02",
-            gender: "Женский",
-        },
-    ]);
 
     // Appointment data
     const [appointment] = useState<Appointment[]>([
@@ -127,12 +105,6 @@ export default function DentalImplantDashboard() {
 
         setImplantParams(calculatedParams);
     };
-
-    // Filter patients based on search term
-    const filteredPatients = patients.filter((patient) => {
-        const fullName = `${patient.surname} ${patient.name} ${patient.patronymic}`.toLowerCase();
-        return fullName.includes(searchTerm.toLowerCase());
-    });
 
 
     return (
@@ -211,87 +183,14 @@ export default function DentalImplantDashboard() {
                         </div>
 
                         {/* Patient list */}
-                        <div className="space-y-2 max-h-[calc(100vh-220px)] overflow-y-auto">
-                            {filteredPatients.map((patient) => (
-                                <div
-                                    key={patient.id}
-                                    className={`p-3 border rounded-lg cursor-pointer transition-all duration-200   ${
-                                        selectedPatient?.id === patient.id
-                                            ? "border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50 shadow-inner"
-                                            : "border-gray-200 hover:bg-gray-50"
-                                    }`}
-                                    onClick={() => {
-                                        setSelectedPatient(patient);
-                                        setImplantParams(null); // Reset implant params when changing patient
-                                    }}
-                                >
-                                    <div className="flex justify-between items-start mb-3">
-                                        <h3 className="font-medium text-gray-800">
-                                            {patient.surname} {patient.name} {patient.patronymic}
-                                        </h3>
-                                    </div>
-                                    <div className="flex justify-between mt-1">
-                                        <p className="text-sm text-gray-600">{patient.birth_date}</p>
-                                        <span
-                                            className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                            {patient.gender}
-                                        </span>
-                                    </div>
-                                </div>
-                            ))}
-                            <UiModal button={<Button
-                                variant="secondary"
-                                className="w-full min-h-18 text-4xl text-blue-800 font-medium bg-blue-100 hover:border hover:border-blue-500 hover:bg-blue-100">
-                                +
-                            </Button>}>
-                                {({close}) => (
-                                    <CreatePatientForm closeModal={close}/>
-                                )}
-                            </UiModal>
-                        </div>
+                        <PatientList onOpenPatient={setSelectedPatient}/>
+
                     </div>
 
                     {/* Main content area */}
                     <div className="w-3/4 space-y-6">
                         {/* Patient card */}
-                        {selectedPatient && (
-                            <div
-                                className="bg-gradient-to-r from-white to-gray-50 p-6 rounded-xl shadow-lg border border-gray-200/50">
-                                <div className="flex items-center justify-between mb-4">
-                                    <h2 className="text-xl font-semibold text-gray-800">
-                                        Карточка пациента
-                                    </h2>
-                                    <div className="flex space-x-2">
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-3 gap-6">
-                                    <div className="bg-white p-4 rounded-lg border border-gray-200/50 shadow-sm">
-                                        <label className="block text-sm font-medium text-gray-600 mb-1">
-                                            ФИО
-                                        </label>
-                                        <p className="mt-1 text-lg font-semibold text-gray-800">
-                                            {selectedPatient.surname} {selectedPatient.name} {selectedPatient.patronymic}
-                                        </p>
-                                    </div>
-                                    <div className="bg-white p-4 rounded-lg border border-gray-200/50 shadow-sm">
-                                        <label className="block text-sm font-medium text-gray-600 mb-1">
-                                            Дата рождения
-                                        </label>
-                                        <p className="mt-1 text-lg font-semibold text-gray-800">
-                                            {selectedPatient.birth_date}
-                                        </p>
-                                    </div>
-                                    <div className="bg-white p-4 rounded-lg border border-gray-200/50 shadow-sm">
-                                        <label className="block text-sm font-medium text-gray-600 mb-1">
-                                            Пол
-                                        </label>
-                                        <p className="mt-1 text-lg font-semibold text-gray-800">
-                                            {selectedPatient.gender}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                        {selectedPatient && <PatientCard patient={selectedPatient}/>}
 
                         {/* Appointment list */}
                         {selectedPatient && (
