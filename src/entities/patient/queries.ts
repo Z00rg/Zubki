@@ -3,6 +3,7 @@ import {CreatePatient, patientApi, UpdatePatient} from "@/shared/api/patientApi"
 import {queryClient} from "@/shared/api/query-client";
 
 const patientListKey = ["patient-list"];
+const patientCasesListKey = ["patient-cases-list"];
 
 // Запрос информации о списке пациентов
 export function usePatientListQuery() {
@@ -10,6 +11,17 @@ export function usePatientListQuery() {
     return useQuery({
         queryKey: patientListKey,
         queryFn: patientApi.getPatientList,
+        retry: 0,
+        staleTime: 5 * 60 * 1000, // 5 минут
+    });
+}
+
+// Запрос информации о приемах пациента
+export function usePatientCasesListQuery(idPatient: number) {
+
+    return useQuery({
+        queryKey: [...patientCasesListKey, idPatient],
+        queryFn: () => patientApi.getPatientCasesList(idPatient),
         retry: 0,
         staleTime: 5 * 60 * 1000, // 5 минут
     });

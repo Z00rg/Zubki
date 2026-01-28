@@ -9,6 +9,15 @@ export type Patient = {
     gender: 0 | 1;
 }
 
+export type PatientCase = {
+    id: number;
+    patient: number;
+    patient_fio: string;
+    user: number;
+    diagnosis: string;
+    created_at: string;
+}
+
 export type CreatePatient = {
     name: string;
     surname: string;
@@ -27,6 +36,12 @@ export const getPatientList = (options?: RequestOptions) =>
         options
     );
 
+export const getPatientCasesList = (idPatient: number, options?: RequestOptions) =>
+    createInstance<PatientCase[]>(
+        {url: `/patients/${idPatient}/cases/`, method: "GET"},
+        options
+    );
+
 export const createPatient = (data: CreatePatient, options?: RequestOptions) =>
     createInstance<void>(
         {url: `/patients/create/`, method: "POST", data: data},
@@ -41,6 +56,7 @@ export const updatePatient = (idPatient: number, data: UpdatePatient, options?: 
 
 export const patientApi = {
     getPatientList,
+    getPatientCasesList,
     createPatient,
     updatePatient,
 };

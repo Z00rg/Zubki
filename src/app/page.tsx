@@ -8,7 +8,6 @@ import {SignOutButton} from "@/features/auth";
 import dynamic from "next/dynamic";
 import {PatientList} from "@/features/patient/ui/patientList";
 import {PatientCard} from "@/shared/ui/PatientCard";
-import {Button} from "@/shared/ui/Button";
 
 // Define types for our data
 type Patient = {
@@ -35,16 +34,6 @@ type ImplantParams = {
     maxStress: number;
     threadArea: number;
 }
-
-type CreatePatient = {
-    name: string;
-    surname: string;
-    patronymic: string;
-    birth_date: string;
-    gender: 0 | 1;
-}
-
-type UpdatePatient = Partial<CreatePatient>
 
 const DicomViewer = dynamic(
     () => import("@/shared/ui/DicomViewer"),
