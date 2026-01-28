@@ -6,6 +6,9 @@ import {useState} from "react";
 import {useProfileQuery} from "@/entities/profile";
 import {SignOutButton} from "@/features/auth";
 import dynamic from "next/dynamic";
+import {UiModal} from "@/shared/ui/UiModal";
+import {CreatePatientForm} from "@/features/patient/ui/createPatientForm";
+import {Button} from "@/shared/ui/Button";
 
 // Define types for our data
 type Patient = {
@@ -236,14 +239,15 @@ export default function DentalImplantDashboard() {
                                     </div>
                                 </div>
                             ))}
-                            <div
-                                className="flex items-center justify-center p-3 rounded-lg text-4xl font-medium bg-blue-100 text-blue-800 cursor-pointer hover:border hover:border-blue-500 "
-                                onClick={() => {
-                                    alert("Формочка добавления пациента")
-                                }}
-                            >
+                            <UiModal button={<Button
+                                variant="secondary"
+                                className="w-full min-h-18 text-4xl text-blue-800 font-medium bg-blue-100 hover:border hover:border-blue-500 hover:bg-blue-100">
                                 +
-                            </div>
+                            </Button>}>
+                                {({close}) => (
+                                    <CreatePatientForm closeModal={close}/>
+                                )}
+                            </UiModal>
                         </div>
                     </div>
 

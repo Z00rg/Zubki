@@ -29,15 +29,15 @@ export const getPatientList = (options?: RequestOptions) =>
         options
     );
 
-export const createPatient = (body: CreatePatient, options?: RequestOptions) =>
+export const createPatient = (data: CreatePatient, options?: RequestOptions) =>
     createInstance<void>(
-        {url: `/patients/create/`, method: "GET"},
-        options
+        {url: `/patients/create/`, method: "POST", data: data},
+        options,
     );
 
-export const updatePatient = (idPatient: number, body: UpdatePatient, options?: RequestOptions) =>
+export const updatePatient = (idPatient: number, data: UpdatePatient, options?: RequestOptions) =>
     createInstance<void>(
-        {url: `/patients/update/${idPatient}`, method: "GET"},
+        {url: `/patients/update/${idPatient}`, method: "PATCH", data: data},
         options
     );
 
