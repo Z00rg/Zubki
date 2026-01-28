@@ -2,7 +2,7 @@ import {createInstance, RequestOptions} from "./api-instance";
 
 // DTO
 
-type Patient = {
+export type Patient = {
     id: number;
     name: string;
     surname: string;
@@ -11,7 +11,7 @@ type Patient = {
     gender: 0 | 1;
 }
 
-type CreatePatient = {
+export type CreatePatient = {
     name: string;
     surname: string;
     patronymic: string;
@@ -19,7 +19,7 @@ type CreatePatient = {
     gender: 0 | 1;
 }
 
-type UpdatePatient = Partial<CreatePatient>
+export type UpdatePatient = Partial<CreatePatient>
 
 // API
 
@@ -41,7 +41,8 @@ export const updatePatient = (idPatient: number, body: UpdatePatient, options?: 
         options
     );
 
-export const accountApi = {
+export const patientApi = {
     getPatientList,
     createPatient,
+    updatePatient,
 };
