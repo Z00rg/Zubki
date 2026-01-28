@@ -8,19 +8,21 @@ import {SignOutButton} from "@/features/auth";
 import dynamic from "next/dynamic";
 
 // Define types for our data
-interface Patient {
+type Patient = {
     id: number;
-    fullName: string;
-    birthdayDate: string;
+    name: string;
+    surname: string;
+    patronymic: string;
+    birth_date: string;
     gender: string;
 }
 
-interface Appointment {
+type Appointment = {
     id: number;
     date: string;
 }
 
-interface ImplantParams {
+type ImplantParams = {
     diameter: number;
     length: number;
     threadType: string;
@@ -32,6 +34,16 @@ interface ImplantParams {
     maxStress: number;
     threadArea: number;
 }
+
+type CreatePatient = {
+    name: string;
+    surname: string;
+    patronymic: string;
+    birth_date: string;
+    gender: 0 | 1;
+}
+
+type UpdatePatient = Partial<CreatePatient>
 
 const DicomViewer = dynamic(
     () => import("@/shared/ui/DicomViewer"),
@@ -50,26 +62,18 @@ export default function DentalImplantDashboard() {
     const [patients] = useState<Patient[]>([
         {
             id: 1,
-            fullName: "Козлова Илона Ивановна",
-            birthdayDate: "2001-12-09",
+            name: "Козлова",
+            surname: "Илона",
+            patronymic: "Ивановна",
+            birth_date: "2001-12-09",
             gender: "Женский",
         },
         {
             id: 2,
-            fullName: "Петрова Мария Сергеевна",
-            birthdayDate: "2001-10-02",
-            gender: "Женский",
-        },
-        {
-            id: 3,
-            fullName: "Сидоров Алексей Петрович",
-            birthdayDate: "2001-11-05",
-            gender: "Мужской",
-        },
-        {
-            id: 4,
-            fullName: "Козлова Екатерина Андреевна",
-            birthdayDate: "2001-07-08",
+            name: "Петрова",
+            surname: "Мария",
+            patronymic: "Сергеевна",
+            birth_date: "2001-10-02",
             gender: "Женский",
         },
     ]);
@@ -122,10 +126,11 @@ export default function DentalImplantDashboard() {
     };
 
     // Filter patients based on search term
-    const filteredPatients = patients.filter(
-        (patient) =>
-            patient.fullName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredPatients = patients.filter((patient) => {
+        const fullName = `${patient.surname} ${patient.name} ${patient.patronymic}`.toLowerCase();
+        return fullName.includes(searchTerm.toLowerCase());
+    });
+
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -219,11 +224,11 @@ export default function DentalImplantDashboard() {
                                 >
                                     <div className="flex justify-between items-start mb-3">
                                         <h3 className="font-medium text-gray-800">
-                                            {patient.fullName}
+                                            {patient.surname} {patient.name} {patient.patronymic}
                                         </h3>
                                     </div>
                                     <div className="flex justify-between mt-1">
-                                        <p className="text-sm text-gray-600">{patient.birthdayDate}</p>
+                                        <p className="text-sm text-gray-600">{patient.birth_date}</p>
                                         <span
                                             className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                             {patient.gender}
@@ -261,7 +266,7 @@ export default function DentalImplantDashboard() {
                                             ФИО
                                         </label>
                                         <p className="mt-1 text-lg font-semibold text-gray-800">
-                                            {selectedPatient.fullName}
+                                            {selectedPatient.surname} {selectedPatient.name} {selectedPatient.patronymic}
                                         </p>
                                     </div>
                                     <div className="bg-white p-4 rounded-lg border border-gray-200/50 shadow-sm">
@@ -269,7 +274,7 @@ export default function DentalImplantDashboard() {
                                             Дата рождения
                                         </label>
                                         <p className="mt-1 text-lg font-semibold text-gray-800">
-                                            {selectedPatient.birthdayDate}
+                                            {selectedPatient.birth_date}
                                         </p>
                                     </div>
                                     <div className="bg-white p-4 rounded-lg border border-gray-200/50 shadow-sm">
@@ -283,7 +288,8 @@ export default function DentalImplantDashboard() {
                                 </div>
                             </div>
                         )}
-                        {/* Список приемов */}
+
+                        {/* Appointment list */}
                         {selectedPatient && (
                             <div
                                 className="bg-gradient-to-r from-white to-gray-50 p-6 rounded-xl shadow-lg border border-gray-200/50">
@@ -325,17 +331,20 @@ export default function DentalImplantDashboard() {
                                 </div>
                             </div>
                         )}
+
                         {/* CT/MRI Scan Viewer */}
                         {selectedPatient && implantParams && (
                             <div
                                 className="bg-gradient-to-r from-white to-gray-50 p-6 rounded-xl shadow-lg border border-gray-200/50">
                                 <div className="flex items-center justify-between mb-4">
                                     <h2 className="text-xl font-semibold text-gray-800">
-                                        Снимки КТ/МРТ
+                                        Снимки КТ
                                     </h2>
                                     <div className="flex space-x-2">
                                         <button
-                                            className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100">
+                                            className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100"
+                                            onClick={() => alert("Формочка загрузки мрт")}
+                                        >
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 className="h-5 w-5"

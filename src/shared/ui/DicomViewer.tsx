@@ -255,7 +255,7 @@ export default function DicomViewerSimple({ src }: Props) {
 
                 {/* Error */}
                 {error && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-red-900 bg-opacity-20 p-4">
+                    <div className="absolute flex items-center justify-center bg-red-900 bg-opacity-20 p-4">
                         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded max-w-md text-center">
                             <div className="font-bold mb-2">Ошибка</div>
                             <div>{error}</div>
