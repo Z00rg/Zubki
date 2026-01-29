@@ -14,7 +14,6 @@ export function useCreateCaseMutation({ onSuccessActions }: { onSuccessActions?:
             queryClient.invalidateQueries();
             onSuccessActions?.forEach(onSuccessAction => onSuccessAction());
 
-            // Показываем успешный тост
             queue.add({
                 title: 'Прием добавлен',
                 description: 'Прием успешно добавлен в систему',
@@ -25,7 +24,14 @@ export function useCreateCaseMutation({ onSuccessActions }: { onSuccessActions?:
         },
         onError: (error) => {
             console.error("Ошибка при добавлении приема:", error);
-            alert("Ошибка при добавлении приема");
+
+            queue.add({
+                title: 'Ошибка прием не добавлен',
+                description: `Ошибка при добавлении приема: ${error}`,
+                type: 'error'
+            }, {
+                timeout: 3000
+            });
         },
     });
 }
