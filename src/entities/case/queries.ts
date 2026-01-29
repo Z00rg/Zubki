@@ -26,7 +26,7 @@ export function useCreateCaseMutation({ onSuccessActions }: { onSuccessActions?:
             console.error("Ошибка при добавлении приема:", error);
 
             queue.add({
-                title: 'Ошибка прием не добавлен',
+                title: 'Ошибка: прием не добавлен',
                 description: `Ошибка при добавлении приема: ${error}`,
                 type: 'error'
             }, {
