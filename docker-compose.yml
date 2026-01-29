@@ -1,0 +1,13 @@
+services:
+  app:
+    container_name: client-app
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_API_BASE_URL: https://dental-implant-smr.ru/api
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_BASE_URL=https://dental-implant-smr.ru/api
+      - NODE_ENV=production
+    restart: unless-stopped

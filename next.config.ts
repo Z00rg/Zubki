@@ -1,14 +1,23 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
   reactStrictMode: true,
-  rewrites() {
-    return [
+  output: 'standalone',
+  images: {
+    remotePatterns: [
       {
-        source: "/api/:path*",
-        destination: "http://localhost:3000/:path*",
+        protocol: 'http', //Для разработки
+        hostname: 'localhost',
+        port: '8000',
+        pathname: '/media/**',
       },
-    ];
+      {
+        protocol: 'https',
+        hostname: 'dental-implant-smr.ru',
+        pathname: '/media/**',
+      },
+    ],
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;

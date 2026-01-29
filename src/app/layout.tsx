@@ -30,10 +30,10 @@ export const metadata: Metadata = {
         title: "Планирование дентальных имплантов",
         description: "Система автоматизированного проектирования для планирования дентальных имплантов",
         type: "website",
-        url: "https://dentalimplant.ru/",
+        url: "https://dental-implant-smr.ru/",
         images: [
             {
-                url: "https://dentalimplant.ru/og-atlas.png",
+                url: "https://dental-implant-smr.ru/og-atlas.png",
                 width: 1200,
                 height: 630,
                 alt: "Планирование дентальных имплантов",
