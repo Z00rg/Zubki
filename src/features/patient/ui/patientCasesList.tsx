@@ -6,7 +6,7 @@ import {UiModal} from "@/shared/ui/UiModal";
 import {CreateCaseForm} from "@/features/case/ui/createCaseForm";
 
 type PatientCasesListProps = {
-    idPatient: number;
+    idPatient: string;
     onOpenCase: (Case: PatientCase) => void
 }
 
@@ -81,7 +81,7 @@ export function PatientCasesList({ idPatient, onOpenCase }: PatientCasesListProp
                         </Button>
                     }>
                         {({close}) => (
-                            <CreateCaseForm closeModal={close} />
+                            <CreateCaseForm closeModal={close} patient={idPatient}/>
                         )}
                     </UiModal>
                 </div>
@@ -120,7 +120,7 @@ export function PatientCasesList({ idPatient, onOpenCase }: PatientCasesListProp
                         </Button>
                     }>
                         {({close}) => (
-                            <CreateCaseForm closeModal={close} />
+                            <CreateCaseForm closeModal={close} patient={idPatient}/>
                         )}
                     </UiModal>
                 </div>

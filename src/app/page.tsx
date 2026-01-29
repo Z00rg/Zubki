@@ -8,15 +8,10 @@ import {SignOutButton} from "@/features/auth";
 import dynamic from "next/dynamic";
 import {PatientCard} from "@/shared/ui/PatientCard";
 import {PatientCasesList, PatientList} from "@/features/patient";
-import {PatientCase} from "@/shared/api/patientApi";
-
-// Define types for our data
-type Patient = {
-    id: number;
-    fio: string;
-    birth_date: string;
-    gender: 0 | 1;
-}
+import {Patient, PatientCase} from "@/shared/api/patientApi";
+import {UiModal} from "@/shared/ui/UiModal";
+import {Button} from "@/shared/ui/Button";
+import {UploadDicomForm} from "@/features/case/ui/uploadDicomForm";
 
 type ImplantParams = {
     diameter: number;
@@ -68,7 +63,7 @@ export default function DentalImplantDashboard() {
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
 
             {/* Header */}
-            <header className="bg-white shadow-md sticky top-0 z-50">
+            <header className="bg-white shadow-md sticky top-0 z-20">
                 <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center gap-2 sm:gap-4">
                         {/* Mobile menu button */}
@@ -123,14 +118,14 @@ export default function DentalImplantDashboard() {
                     {/* Mobile Sidebar Overlay */}
                     {isMobileSidebarOpen && (
                         <div
-                            className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+                            className="fixed inset-0 bg-black/50 z-15 lg:hidden"
                             onClick={() => setIsMobileSidebarOpen(false)}
                         />
                     )}
 
                     {/* Left sidebar - Patient list */}
                     <div className={`
-                                    fixed lg:relative inset-y-0 left-0 z-40
+                                    fixed lg:relative inset-y-0 left-0 z-15
                                     w-80 sm:w-96 lg:w-1/4
                                     bg-white/95 lg:bg-white/80 backdrop-blur-sm 
                                     rounded-none lg:rounded-xl 
@@ -208,19 +203,25 @@ export default function DentalImplantDashboard() {
                                     <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
                                         Снимки КТ
                                     </h2>
-                                    <button
-                                        className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100"
-                                        onClick={() => alert("Формочка загрузки мрт")}
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20"
-                                             fill="currentColor">
-                                            <path fillRule="evenodd"
-                                                  d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                                                  clipRule="evenodd"/>
-                                        </svg>
-                                    </button>
+                                    {/* Кнопка загрузки КТ */}
+                                    <UiModal button={
+                                        <Button
+                                            variant="secondary"
+                                            className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20"
+                                                 fill="currentColor">
+                                                <path fillRule="evenodd"
+                                                      d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                                                      clipRule="evenodd"/>
+                                            </svg>
+                                        </Button>
+                                    }>
+                                        {({close}) => (
+                                            <UploadDicomForm closeModal={close} caseId={selectedCase?.id}/>
+                                        )}
+                                    </UiModal>
                                 </div>
-                                <div className="h-64 sm:h-96 lg:h-[500px]">
+                                <div className="flex items-center justify-center">
                                     <DicomViewer src="/KT"/>
                                 </div>
                             </div>

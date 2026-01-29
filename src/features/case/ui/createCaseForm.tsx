@@ -4,9 +4,14 @@ import {CreateCase} from "@/shared/api/caseApi";
 import {Button} from "@/shared/ui/Button";
 import {Form} from "react-aria-components";
 
-export function CreateCaseForm({closeModal}: { closeModal: () => void }) {
+export type CreateCaseFormProps = {
+    closeModal: () => void;
+    patient: string;
+}
 
-    const {errors, handleSubmit, isSubmitting, control} = useCreateCase({closeModal});
+export function CreateCaseForm({closeModal, patient}: CreateCaseFormProps) {
+
+    const {errors, handleSubmit, isSubmitting, control} = useCreateCase({closeModal, patient});
 
     return (
         <div>

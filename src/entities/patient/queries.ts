@@ -18,7 +18,7 @@ export function usePatientListQuery() {
 }
 
 // Запрос информации о приемах пациента
-export function usePatientCasesListQuery(idPatient: number) {
+export function usePatientCasesListQuery(idPatient: string) {
 
     return useQuery({
         queryKey: [...patientCasesListKey, idPatient],

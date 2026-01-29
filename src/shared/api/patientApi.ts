@@ -3,7 +3,7 @@ import {createInstance, RequestOptions} from "./api-instance";
 // DTO
 
 export type Patient = {
-    id: number;
+    id: string;
     fio: string;
     birth_date: string;
     gender: 0 | 1;
@@ -16,6 +16,28 @@ export type PatientCase = {
     user: number;
     diagnosis: string;
     created_at: string;
+    implant_data: ImageData;
+    dicom_files: string[];
+}
+
+export type Implant_data = {
+    id: number;
+    visualization_image: string;
+    gensity_graph: string;
+    diameter: number;
+    length: number;
+    thread_shape: string;
+    thread_patch: number;
+    thread_depth: string;
+    bone_type: string;
+    hu_density: number;
+    chewing_load: number;
+    limit_stress: number;
+    surface_area: number;
+    is_calculated: boolean;
+    created_at: string;
+    case: number;
+    implant_variant: number;
 }
 
 export type CreatePatient = {
@@ -36,7 +58,7 @@ export const getPatientList = (options?: RequestOptions) =>
         options
     );
 
-export const getPatientCasesList = (idPatient: number, options?: RequestOptions) =>
+export const getPatientCasesList = (idPatient: string, options?: RequestOptions) =>
     createInstance<PatientCase[]>(
         {url: `/patients/${idPatient}/cases/`, method: "GET"},
         options

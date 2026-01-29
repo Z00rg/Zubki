@@ -3,7 +3,7 @@ import {useState} from "react";
 import {PatientCase} from "@/shared/api/patientApi";
 
 
-export function useGetPatientCasesList(idPatient: number) {
+export function useGetPatientCasesList(idPatient: string) {
 
     const [selectedCase, setSelectedCase] = useState<PatientCase | null>(null);
 

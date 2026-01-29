@@ -1,6 +1,6 @@
 import {useMutation} from "@tanstack/react-query";
 import {queryClient} from "@/shared/api/query-client";
-import {caseApi, CreateCase} from "@/shared/api/caseApi";
+import {caseApi, CreateCase, UploadDicomDto} from "@/shared/api/caseApi";
 import {queue} from "@/shared/ui/Toast";
 
 // Action после мутации
@@ -26,6 +26,36 @@ export function useCreateCaseMutation({ onSuccessActions }: { onSuccessActions?:
         onError: (error) => {
             console.error("Ошибка при добавлении приема:", error);
             alert("Ошибка при добавлении приема");
+        },
+    });
+}
+
+// Добавление КТ к приему
+export function useUploadDicomMutation({ onSuccessActions }: { onSuccessActions?: OnSuccessAction[] } = {}) {
+    return useMutation({
+        mutationFn: (data: UploadDicomDto) => caseApi.uploadDicom(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries();
+            onSuccessActions?.forEach(action => action());
+
+            queue.add({
+                title: 'DICOM загружен',
+                description: `Файл успешно загружен`,
+                type: 'success'
+            }, {
+                timeout: 3000
+            });
+        },
+        onError: (error) => {
+            console.error("Ошибка при загрузке DICOM:", error);
+
+            queue.add({
+                title: 'Ошибка загрузки',
+                description: 'Не удалось загрузить DICOM файл',
+                type: 'error'
+            }, {
+                timeout: 5000
+            });
         },
     });
 }

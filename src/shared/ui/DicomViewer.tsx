@@ -16,7 +16,6 @@ export default function DicomViewerSimple({ src }: Props) {
 
     const [imageIds, setImageIds] = useState<string[]>([]);
     const [index, setIndex] = useState(0);
-    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     // Состояние для ручного управления яркостью/контрастом
@@ -90,7 +89,6 @@ export default function DicomViewerSimple({ src }: Props) {
     --------------------------------------------- */
     useEffect(() => {
         async function loadImages() {
-            setIsLoading(true);
             setError(null);
 
             try {
@@ -115,11 +113,9 @@ export default function DicomViewerSimple({ src }: Props) {
                 console.log(`📁 Найдено ${ids.length} файлов`);
                 setImageIds(ids);
                 setIndex(0);
-                setIsLoading(false);
             } catch (err) {
                 console.error("❌ Ошибка загрузки:", err);
                 setError(err instanceof Error ? err.message : "Ошибка загрузки");
-                setIsLoading(false);
             }
         }
 
@@ -243,16 +239,6 @@ export default function DicomViewerSimple({ src }: Props) {
                     style={{ imageRendering: 'pixelated' }}
                 />
 
-                {/* Loader */}
-                {isLoading && (
-                    <div className="w-124 h-124 flex items-center justify-center bg-black bg-opacity-70">
-                        <div className="text-white text-lg flex flex-col items-center gap-2">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-                            <div>Загрузка...</div>
-                        </div>
-                    </div>
-                )}
-
                 {/* Error */}
                 {error && (
                     <div className="absolute flex items-center justify-center bg-red-900 bg-opacity-20 p-4">
@@ -266,7 +252,7 @@ export default function DicomViewerSimple({ src }: Props) {
 
             {/* Controls */}
             {imageIds.length > 0 && !error && (
-                <div className="flex flex-col gap-4">
+                <div className="flex w-full mx-auto flex-col gap-4 max-w-[80svw]">
                     {/* Slice navigation */}
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-medium text-gray-700">

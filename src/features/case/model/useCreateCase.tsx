@@ -2,7 +2,12 @@ import {useCreateCaseMutation} from "@/entities/case";
 import {useForm} from "react-hook-form";
 import {CreateCase} from "@/shared/api/caseApi";
 
-export function useCreateCase({ closeModal }: { closeModal: () => void }) {
+export type useCreateCaseMutationProps = {
+    closeModal: () => void;
+    patient: string;
+}
+
+export function useCreateCase({ closeModal, patient }: useCreateCaseMutationProps) {
 
     const {
         handleSubmit,
@@ -17,8 +22,13 @@ export function useCreateCase({ closeModal }: { closeModal: () => void }) {
     const createCaseMutation = useCreateCaseMutation({onSuccessActions: [closeModal]});
 
     const onSubmit = (data: CreateCase) => {
-        createCaseMutation.mutate(data)
-    }
+        const payload: CreateCase = {
+            ...data,
+            patient: patient
+        };
+
+        createCaseMutation.mutate(payload);
+    };
 
     return {
         control,
