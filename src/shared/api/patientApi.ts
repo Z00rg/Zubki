@@ -16,7 +16,7 @@ export type PatientCase = {
     user: number;
     diagnosis: string;
     created_at: string;
-    implant_data: ImageData;
+    implant_data: Implant_data;
     dicom_files: string[];
 }
 

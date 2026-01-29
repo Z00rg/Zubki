@@ -13,19 +13,6 @@ import {UiModal} from "@/shared/ui/UiModal";
 import {Button} from "@/shared/ui/Button";
 import {UploadDicomForm} from "@/features/case/ui/uploadDicomForm";
 
-type ImplantParams = {
-    diameter: number;
-    length: number;
-    threadType: string;
-    threadPitch: string;
-    threadDepth: string;
-    boneDensity: string;
-    boneHU: number;
-    chewingLoad: number;
-    maxStress: number;
-    threadArea: number;
-}
-
 const DicomViewer = dynamic(
     () => import("@/shared/ui/DicomViewer"),
     {ssr: false}
@@ -45,19 +32,6 @@ export default function DentalImplantDashboard() {
 
     // Mobile sidebar state
     const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-
-    const implantParams: ImplantParams = {
-        diameter: 4.2,
-        length: 10.3,
-        threadType: "V-образная",
-        threadPitch: "1.2 мм",
-        threadDepth: "0.35-0.47 мм",
-        boneDensity: "Кость D3",
-        boneHU: 510,
-        chewingLoad: 700,
-        maxStress: 2.79,
-        threadArea: 46.83,
-    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -208,7 +182,8 @@ export default function DentalImplantDashboard() {
                                         <Button
                                             variant="secondary"
                                             className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100">
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20"
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5"
+                                                 viewBox="0 0 20 20"
                                                  fill="currentColor">
                                                 <path fillRule="evenodd"
                                                       d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
@@ -222,116 +197,198 @@ export default function DentalImplantDashboard() {
                                     </UiModal>
                                 </div>
                                 <div className="flex items-center justify-center">
-                                    <DicomViewer src="/KT"/>
+                                    <DicomViewer src={selectedCase.dicom_files}/>
                                 </div>
                             </div>
                         )}
 
                         {/* CAD/CAM Implant Design Section */}
-                        {selectedCase && implantParams && (
+                        {selectedCase && (
                             <div
                                 className="bg-gradient-to-r from-white to-gray-50 p-4 sm:p-6 rounded-xl shadow-lg border border-gray-200/50">
                                 <div className="flex items-center justify-between mb-4">
                                     <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
                                         САПР имплантата
                                     </h2>
-                                    <span
-                                        className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-blue-100 text-blue-800">
-                                        Рассчитано
-                                    </span>
+                                    {selectedCase.implant_data && (
+                                        <span
+                                            className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-blue-100 text-blue-800">
+                                            Рассчитано
+                                        </span>
+                                    )}
                                 </div>
 
-                                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 sm:gap-8">
-                                    {/* Calculated Parameters */}
-                                    <div className="bg-white p-4 sm:p-5 rounded-xl border border-gray-200/50 shadow-sm">
-                                        <div className="flex items-center mb-4">
-                                            <div className="bg-blue-100 p-2 rounded-lg mr-3 flex-shrink-0">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                     className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" fill="none"
-                                                     viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                                </svg>
-                                            </div>
-                                            <h3 className="text-base sm:text-lg font-medium text-gray-800">
-                                                Рассчитанные параметры
-                                            </h3>
-                                        </div>
-                                        <div className="space-y-3 sm:space-y-4">
-                                            <div className="relative w-full aspect-video">
-                                                <Image
-                                                    src="/image_5.png"
-                                                    alt="Параметры имплантата"
-                                                    fill
-                                                    className="object-contain"
-                                                />
-                                            </div>
-                                            {[
-                                                {label: 'Диаметр имплантата:', value: `${implantParams.diameter} мм`},
-                                                {label: 'Длина имплантата:', value: `${implantParams.length} мм`},
-                                                {label: 'Форма резьбы:', value: implantParams.threadType},
-                                                {label: 'Шаг резьбы:', value: implantParams.threadPitch},
-                                                {label: 'Глубина резьбы:', value: implantParams.threadDepth},
-                                                {label: 'Плотность кости:', value: implantParams.boneDensity},
-                                                {
-                                                    label: 'Плотность по Хаунсфилду:',
-                                                    value: `${implantParams.boneHU} HU`
-                                                },
-                                                {
-                                                    label: 'Жевательная нагрузка:',
-                                                    value: `${implantParams.chewingLoad} кгс`
-                                                },
-                                                {
-                                                    label: 'Предельное напряжение:',
-                                                    value: `${implantParams.maxStress} кг/мм²`
-                                                },
-                                                {
-                                                    label: 'Площадь поверхности резьбы:',
-                                                    value: `${implantParams.threadArea} мм²`
-                                                }
-                                            ].map((param, index) => (
-                                                <div key={index}
-                                                     className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2 pb-3 border-b border-gray-100 last:border-0">
-                                                    <span
-                                                        className="text-xs sm:text-sm text-gray-600">{param.label}</span>
-                                                    <span
-                                                        className="font-semibold text-sm sm:text-base text-gray-800 bg-blue-50 px-2 sm:px-3 py-1 rounded-full inline-block w-fit">
-                                                        {param.value}
-                                                    </span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    {/* Visualization Area */}
-                                    <div className="bg-white p-4 sm:p-5 rounded-xl border border-gray-200/50 shadow-sm">
-                                        <div className="flex items-center mb-4">
-                                            <div
-                                                className="bg-blue-100 text-blue-800 p-2 rounded-lg mr-3 flex-shrink-0">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                     className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24"
-                                                     stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                                          d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
-                                                </svg>
-                                            </div>
-                                            <h3 className="text-base sm:text-lg font-medium text-gray-800">
-                                                Визуализация имплантата
-                                            </h3>
-                                        </div>
+                                {/* Заглушка если нет данных */}
+                                {!selectedCase.implant_data && (
+                                    <div
+                                        className="flex flex-col items-center justify-center min-h-[400px] bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg border-2 border-dashed border-gray-300 p-8">
                                         <div
-                                            className="bg-gradient-to-br border-2 border-dashed border-gray-700/50 rounded-xl w-full h-64 sm:h-96 lg:h-[500px] flex items-center justify-center relative overflow-hidden">
-                                            <div className="relative w-full h-full">
-                                                <Image
-                                                    src="/image_6.png"
-                                                    alt="Визуализация"
-                                                    fill
-                                                    className="object-contain p-4"
+                                            className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-6">
+                                            <svg
+                                                className="w-10 h-10 text-blue-600"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={1.5}
+                                                    d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
                                                 />
+                                            </svg>
+                                        </div>
+                                        <h3 className="text-xl font-bold text-gray-800 mb-2">
+                                            Расчеты не выполнены
+                                        </h3>
+                                        <p className="text-gray-600 text-center max-w-md mb-6">
+                                            Параметры имплантата будут автоматически рассчитаны системой на основе
+                                            загруженных КТ-снимков
+                                        </p>
+                                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                                 stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            <span>{selectedCase.dicom_files ? "Дождитесь завершения расчетов" : "Загрузите данные кт в форму выше"}</span>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Отображение данных */}
+                                {selectedCase.implant_data && (
+                                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 sm:gap-8">
+                                        {/* Calculated Parameters */}
+                                        <div
+                                            className="bg-white p-4 sm:p-5 rounded-xl border border-gray-200/50 shadow-sm">
+                                            <div className="flex items-center mb-4">
+                                                <div className="bg-blue-100 p-2 rounded-lg mr-3 flex-shrink-0">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth={2}
+                                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                                        />
+                                                    </svg>
+                                                </div>
+                                                <h3 className="text-base sm:text-lg font-medium text-gray-800">
+                                                    Рассчитанные параметры
+                                                </h3>
+                                            </div>
+                                            <div className="space-y-3 sm:space-y-4">
+                                                {/* График плотности */}
+                                                <div className="relative w-full aspect-video">
+                                                    <Image
+                                                        src={selectedCase.implant_data.gensity_graph}
+                                                        alt="График плотности кости"
+                                                        fill
+                                                        className="object-contain"
+                                                    />
+                                                </div>
+
+                                                {/* Параметры */}
+                                                {[
+                                                    {
+                                                        label: 'Диаметр имплантата:',
+                                                        value: `${selectedCase.implant_data.diameter} мм`
+                                                    },
+                                                    {
+                                                        label: 'Длина имплантата:',
+                                                        value: `${selectedCase.implant_data.length} мм`
+                                                    },
+                                                    {
+                                                        label: 'Форма резьбы:',
+                                                        value: selectedCase.implant_data.thread_shape
+                                                    },
+                                                    {
+                                                        label: 'Шаг резьбы:',
+                                                        value: `${selectedCase.implant_data.thread_patch} мм`
+                                                    },
+                                                    {
+                                                        label: 'Глубина резьбы:',
+                                                        value: selectedCase.implant_data.thread_depth
+                                                    },
+                                                    {label: 'Тип кости:', value: selectedCase.implant_data.bone_type},
+                                                    {
+                                                        label: 'Плотность по Хаунсфилду:',
+                                                        value: `${selectedCase.implant_data.hu_density} HU`
+                                                    },
+                                                    {
+                                                        label: 'Жевательная нагрузка:',
+                                                        value: `${selectedCase.implant_data.chewing_load} кгс`
+                                                    },
+                                                    {
+                                                        label: 'Предельное напряжение:',
+                                                        value: `${selectedCase.implant_data.limit_stress} кг/мм²`
+                                                    },
+                                                    {
+                                                        label: 'Площадь поверхности резьбы:',
+                                                        value: `${selectedCase.implant_data.surface_area} мм²`
+                                                    }
+                                                ].map((param, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2 pb-3 border-b border-gray-100 last:border-0"
+                                                    >
+                                                        <span className="text-xs sm:text-sm text-gray-600">
+                                                            {param.label}
+                                                        </span>
+                                                        <span
+                                                            className="font-semibold text-sm sm:text-base text-gray-800 bg-blue-50 px-2 sm:px-3 py-1 rounded-full inline-block w-fit">
+                                                            {param.value}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Visualization Area */}
+                                        <div
+                                            className="bg-white p-4 sm:p-5 rounded-xl border border-gray-200/50 shadow-sm">
+                                            <div className="flex items-center mb-4">
+                                                <div
+                                                    className="bg-blue-100 text-blue-800 p-2 rounded-lg mr-3 flex-shrink-0">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        className="h-5 w-5 sm:h-6 sm:w-6"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth={2}
+                                                            d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
+                                                        />
+                                                    </svg>
+                                                </div>
+                                                <h3 className="text-base sm:text-lg font-medium text-gray-800">
+                                                    Визуализация имплантата
+                                                </h3>
+                                            </div>
+                                            <div
+                                                className="bg-gradient-to-br border-2 border-dashed border-gray-700/50 rounded-xl w-full h-64 sm:h-96 lg:h-[500px] flex items-center justify-center relative overflow-hidden">
+                                                <div className="relative w-full h-full">
+                                                    <Image
+                                                        src={selectedCase.implant_data.visualization_image}
+                                                        alt="Визуализация имплантата"
+                                                        fill
+                                                        className="object-contain p-4"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         )}
 

@@ -1,22 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 
 interface Props {
-    src: string;
+    src: string[];
 }
 
 /**
- * Упрощённая версия DICOM Viewer без cornerstone-tools
- * Использует только cornerstone-core для базового отображения
+ * DICOM Viewer с поддержкой массива файлов
  */
-export default function DicomViewerSimple({ src }: Props) {
+export default function DicomViewer({ src }: Props) {
     const elementRef = useRef<HTMLDivElement | null>(null);
     const cornerstoneRef = useRef<any>(null);
 
     const [imageIds, setImageIds] = useState<string[]>([]);
     const [index, setIndex] = useState(0);
     const [error, setError] = useState<string | null>(null);
+    const [isInitialized, setIsInitialized] = useState(false);
 
     // Состояние для ручного управления яркостью/контрастом
     const [windowWidth, setWindowWidth] = useState(0);
@@ -60,7 +61,8 @@ export default function DicomViewerSimple({ src }: Props) {
                 if (!element) return;
 
                 cs.enable(element);
-                console.log("✅ Cornerstone инициализирован (без tools)");
+                setIsInitialized(true);
+                console.log("✅ Cornerstone инициализирован");
 
             } catch (err) {
                 console.error("❌ Ошибка инициализации:", err);
@@ -73,6 +75,7 @@ export default function DicomViewerSimple({ src }: Props) {
         return () => {
             mounted = false;
             const cs = cornerstoneRef.current;
+            // eslint-disable-next-line react-hooks/exhaustive-deps
             const el = elementRef.current;
             if (cs && el) {
                 try {
@@ -85,42 +88,29 @@ export default function DicomViewerSimple({ src }: Props) {
     }, []);
 
     /* ---------------------------------------------
-       Load DICOM list
+       Process DICOM files from props
     --------------------------------------------- */
     useEffect(() => {
-        async function loadImages() {
-            setError(null);
-
-            try {
-                const res = await fetch(`/api/list-dicom?path=${encodeURIComponent(src)}`);
-
-                if (!res.ok) {
-                    throw new Error(`HTTP error! status: ${res.status}`);
-                }
-
-                const data = await res.json();
-
-                if (!data || !Array.isArray(data) || data.length === 0) {
-                    throw new Error("DICOM файлы не найдены");
-                }
-
-                const origin = window.location.origin;
-                const ids = data.map((file: string) => {
-                    const fileName = file.endsWith('.dcm') ? file : `${file}.dcm`;
-                    return `wadouri:${origin}${src}/${fileName}`;
-                });
-
-                console.log(`📁 Найдено ${ids.length} файлов`);
-                setImageIds(ids);
-                setIndex(0);
-            } catch (err) {
-                console.error("❌ Ошибка загрузки:", err);
-                setError(err instanceof Error ? err.message : "Ошибка загрузки");
-            }
+        if (!isInitialized || !src || src.length === 0) {
+            setImageIds([]);
+            return;
         }
 
-        loadImages();
-    }, [src]);
+        setError(null);
+
+        try {
+            // Преобразуем массив путей в imageIds для cornerstone
+            const origin = window.location.origin;
+            const ids = src.map((filePath: string) => `wadouri:${origin}${filePath}`);
+
+            console.log(`📁 Загружено ${ids.length} DICOM файлов`);
+            setImageIds(ids);
+            setIndex(0);
+        } catch (err) {
+            console.error("❌ Ошибка обработки файлов:", err);
+            setError(err instanceof Error ? err.message : "Ошибка обработки файлов");
+        }
+    }, [src, isInitialized]);
 
     /* ---------------------------------------------
        Display image
@@ -185,7 +175,7 @@ export default function DicomViewerSimple({ src }: Props) {
     --------------------------------------------- */
     useEffect(() => {
         const el = elementRef.current;
-        if (!el) return;
+        if (!el || !imageIds.length) return;
 
         function onWheel(e: WheelEvent) {
             e.preventDefault();
@@ -204,9 +194,9 @@ export default function DicomViewerSimple({ src }: Props) {
        Keyboard navigation
     --------------------------------------------- */
     useEffect(() => {
-        function onKeyDown(e: KeyboardEvent) {
-            if (!imageIds.length) return;
+        if (!imageIds.length) return;
 
+        function onKeyDown(e: KeyboardEvent) {
             if (e.key === "ArrowUp" || e.key === "ArrowRight") {
                 e.preventDefault();
                 setIndex((i) => Math.min(i + 1, imageIds.length - 1));
@@ -227,24 +217,71 @@ export default function DicomViewerSimple({ src }: Props) {
     }, [imageIds.length]);
 
     /* ---------------------------------------------
-       Render
+       Empty state (no DICOM files)
+    --------------------------------------------- */
+    if (!src || src.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[500px] bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg border-2 border-dashed border-gray-300 p-8">
+                <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-6">
+                    <svg
+                        className="w-10 h-10 text-blue-600"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1.5}
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                    </svg>
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">
+                    КТ-снимки не загружены
+                </h3>
+                <p className="text-gray-600 text-center max-w-md mb-6">
+                    Загрузите DICOM архив с компьютерной томографией для просмотра и анализа снимков
+                </p>
+                <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Используйте кнопку загрузки выше</span>
+                </div>
+            </div>
+        );
+    }
+
+    /* ---------------------------------------------
+       Render viewer
     --------------------------------------------- */
     return (
         <div className="flex flex-col gap-4">
             {/* Viewport */}
-            <div className="flex justify-center">
+            <div className="flex justify-center relative">
                 <div
                     ref={elementRef}
-                    className="w-124 h-124 bg-black select-none border border-gray-700 rounded-lg overflow-hidden"
+                    className="w-full max-w-2xl aspect-square bg-black select-none border border-gray-700 rounded-lg overflow-hidden"
                     style={{ imageRendering: 'pixelated' }}
                 />
 
-                {/* Error */}
+                {/* Error overlay */}
                 {error && (
-                    <div className="absolute flex items-center justify-center bg-red-900 bg-opacity-20 p-4">
+                    <div className="absolute inset-0 flex items-center justify-center bg-red-900 bg-opacity-20 p-4">
                         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded max-w-md text-center">
                             <div className="font-bold mb-2">Ошибка</div>
                             <div>{error}</div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Loading overlay */}
+                {!error && imageIds.length > 0 && !cornerstoneRef.current && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="text-white text-center">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+                            <div>Загрузка изображения...</div>
                         </div>
                     </div>
                 )}
@@ -252,7 +289,7 @@ export default function DicomViewerSimple({ src }: Props) {
 
             {/* Controls */}
             {imageIds.length > 0 && !error && (
-                <div className="flex w-full mx-auto flex-col gap-4 max-w-[80svw]">
+                <div className="flex w-full mx-auto flex-col gap-4">
                     {/* Slice navigation */}
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-medium text-gray-700">
@@ -334,6 +371,12 @@ export default function DicomViewerSimple({ src }: Props) {
                     >
                         Сбросить настройки
                     </button>
+
+                    {/* Info */}
+                    <div className="text-xs text-gray-500 text-center space-y-1">
+                        <p>💡 Используйте колесико мыши или стрелки клавиатуры для навигации</p>
+                        <p>Клавиши: Home - первый срез, End - последний срез</p>
+                    </div>
                 </div>
             )}
         </div>
