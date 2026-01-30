@@ -1,6 +1,4 @@
 import {usePatientCasesListQuery} from "@/entities/patient/queries";
-import {useState} from "react";
-import {PatientCase} from "@/shared/api/patientApi";
 
 
 export function useGetPatientCasesList(idPatient: string) {
