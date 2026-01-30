@@ -5,8 +5,6 @@ import {PatientCase} from "@/shared/api/patientApi";
 
 export function useGetPatientCasesList(idPatient: string) {
 
-    const [selectedCase, setSelectedCase] = useState<PatientCase | null>(null);
-
     const patientCasesListQuery = usePatientCasesListQuery(idPatient);
 
     const patientCasesList = patientCasesListQuery.data ?? [];
@@ -15,7 +13,5 @@ export function useGetPatientCasesList(idPatient: string) {
         patientCasesList,
         isLoading: patientCasesListQuery.isPending,
         isError: patientCasesListQuery.isError,
-        selectedCase,
-        setSelectedCase,
     }
 }

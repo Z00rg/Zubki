@@ -24,7 +24,6 @@ export function usePatientCasesListQuery(idPatient: string) {
         queryKey: [...patientCasesListKey, idPatient],
         queryFn: () => patientApi.getPatientCasesList(idPatient),
         retry: 0,
-        staleTime: 5 * 60 * 1000, // 5 минут
     });
 }
 

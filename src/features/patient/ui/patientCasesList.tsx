@@ -6,13 +6,15 @@ import {UiModal} from "@/shared/ui/UiModal";
 import {CreateCaseForm} from "@/features/case/ui/createCaseForm";
 
 type PatientCasesListProps = {
+    selectedCase: PatientCase | null;
+    setSelectedCase: (selectedCase: PatientCase) => void;
     idPatient: string;
     onOpenCase: (Case: PatientCase) => void
 }
 
-export function PatientCasesList({ idPatient, onOpenCase }: PatientCasesListProps) {
+export function PatientCasesList({ selectedCase, setSelectedCase, idPatient, onOpenCase }: PatientCasesListProps) {
 
-    const { patientCasesList, isError, isLoading, selectedCase, setSelectedCase } = useGetPatientCasesList(idPatient);
+    const { patientCasesList, isError, isLoading} = useGetPatientCasesList(idPatient);
 
     const handleCaseClick = (Case: PatientCase) => {
         setSelectedCase(Case);

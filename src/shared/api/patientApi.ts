@@ -23,11 +23,11 @@ export type PatientCase = {
 export type Implant_data = {
     id: number;
     visualization_image: string;
-    gensity_graph: string;
+    density_graph: string;
     diameter: number;
     length: number;
     thread_shape: string;
-    thread_patch: number;
+    thread_pitch: number;
     thread_depth: string;
     bone_type: string;
     hu_density: number;
@@ -58,6 +58,12 @@ export const getPatientList = (options?: RequestOptions) =>
         options
     );
 
+export const getPatientCase = (idPatient: string | undefined, idCase: number | undefined, options?: RequestOptions) =>
+    createInstance<PatientCase>(
+        {url: `/patients/${idPatient}/cases/${idCase}`, method: "GET"},
+        options
+    );
+
 export const getPatientCasesList = (idPatient: string, options?: RequestOptions) =>
     createInstance<PatientCase[]>(
         {url: `/patients/${idPatient}/cases/`, method: "GET"},
@@ -79,6 +85,7 @@ export const updatePatient = (idPatient: number, data: UpdatePatient, options?: 
 export const patientApi = {
     getPatientList,
     getPatientCasesList,
+    getPatientCase,
     createPatient,
     updatePatient,
 };

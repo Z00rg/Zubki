@@ -152,6 +152,7 @@ export default function DentalImplantDashboard() {
                         {/* Patient list */}
                         <PatientList onOpenPatient={(patient) => {
                             setSelectedPatient(patient);
+                            setSelectedCase(null);
                             setIsMobileSidebarOpen(false); // Close sidebar on mobile after selection
                         }}/>
                     </div>
@@ -164,6 +165,8 @@ export default function DentalImplantDashboard() {
                         {/* Appointment list */}
                         {selectedPatient && (
                             <PatientCasesList
+                                selectedCase={selectedCase}
+                                setSelectedCase={setSelectedCase}
                                 idPatient={selectedPatient?.id}
                                 onOpenCase={setSelectedCase}
                             />
@@ -251,7 +254,7 @@ export default function DentalImplantDashboard() {
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                                                       d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                             </svg>
-                                            <span>{selectedCase.dicom_files ? "Дождитесь завершения расчетов" : "Загрузите данные кт в форму выше"}</span>
+                                            <span>Загрузите данные кт в форму выше</span>
                                         </div>
                                     </div>
                                 )}
@@ -287,7 +290,7 @@ export default function DentalImplantDashboard() {
                                                 {/* График плотности */}
                                                 <div className="relative w-full aspect-video">
                                                     <Image
-                                                        src={selectedCase.implant_data.gensity_graph}
+                                                        src={selectedCase.implant_data.density_graph}
                                                         alt="График плотности кости"
                                                         fill
                                                         className="object-contain"
@@ -310,7 +313,7 @@ export default function DentalImplantDashboard() {
                                                     },
                                                     {
                                                         label: 'Шаг резьбы:',
-                                                        value: `${selectedCase.implant_data.thread_patch} мм`
+                                                        value: `${selectedCase.implant_data.thread_pitch} мм`
                                                     },
                                                     {
                                                         label: 'Глубина резьбы:',

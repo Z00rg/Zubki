@@ -100,8 +100,7 @@ export default function DicomViewer({ src }: Props) {
 
         try {
             // Преобразуем массив путей в imageIds для cornerstone
-            const origin = window.location.origin;
-            const ids = src.map((filePath: string) => `wadouri:${origin}${filePath}`);
+            const ids = src.map((url: string) => `wadouri:${url}`);
 
             console.log(`📁 Загружено ${ids.length} DICOM файлов`);
             setImageIds(ids);
