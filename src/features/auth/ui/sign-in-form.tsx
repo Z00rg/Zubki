@@ -47,16 +47,6 @@ export function SignInForm() {
                         autoComplete: "current-password",
                     }}
                 />
-
-                {/* Ссылка "Забыли пароль?" */}
-                {/* <div className="text-right">
-          <UiLink
-            href={ROUTES.FORGOT_PASSWORD}
-            className="text-sm text-[#2E76AA] hover:text-[#26628A]"
-          >
-            Забыли пароль?
-          </UiLink>
-        </div> */}
             </div>
 
             {/* Сообщение об ошибке */}

@@ -62,17 +62,6 @@ export function PatientList({ onOpenPatient }: { onOpenPatient: (patient: Patien
                     <p className="text-sm text-gray-500">
                         Добавьте первого пациента, нажав кнопку ниже
                     </p>
-                    <UiModal button={
-                        <Button
-                            variant="secondary"
-                            className="w-full min-h-18 text-4xl text-blue-800 font-medium bg-blue-100 hover:border hover:border-blue-500 hover:bg-blue-100">
-                            +
-                        </Button>
-                    }>
-                        {({close}) => (
-                            <CreatePatientForm closeModal={close}/>
-                        )}
-                    </UiModal>
                 </div>
             )}
 

@@ -25,7 +25,7 @@ export function UiHeader({className, variant}: UiHeaderProps) {
                 />
             )}
             <div className="text-4xl w-80 font-normal text-center">
-                Цифровой атлас кольпоскопии
+                Планирование имплантов
             </div>
         </header>
     );
