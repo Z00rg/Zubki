@@ -24,7 +24,7 @@ export default function DicomViewer({ src }: Props) {
     const [windowCenter, setWindowCenter] = useState(0);
 
     /* ---------------------------------------------
-       Init Cornerstone (без tools)
+       Init Cornerstone
     --------------------------------------------- */
     useEffect(() => {
         let mounted = true;
@@ -91,12 +91,28 @@ export default function DicomViewer({ src }: Props) {
        Process DICOM files from props
     --------------------------------------------- */
     useEffect(() => {
+        // Сбрасываем состояние при смене src
+        setError(null);
+        setIndex(0);
+        setWindowWidth(0);
+        setWindowCenter(0);
+
         if (!isInitialized || !src || src.length === 0) {
             setImageIds([]);
+
+            // Очищаем viewport если нет файлов
+            const cs = cornerstoneRef.current;
+            const element = elementRef.current;
+            if (cs && element) {
+                try {
+                    cs.reset(element);
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                } catch (e) {
+                    // Игнорируем ошибку если элемент не инициализирован
+                }
+            }
             return;
         }
-
-        setError(null);
 
         try {
             // Преобразуем массив путей в imageIds для cornerstone
@@ -104,7 +120,6 @@ export default function DicomViewer({ src }: Props) {
 
             console.log(`📁 Загружено ${ids.length} DICOM файлов`);
             setImageIds(ids);
-            setIndex(0);
         } catch (err) {
             console.error("❌ Ошибка обработки файлов:", err);
             setError(err instanceof Error ? err.message : "Ошибка обработки файлов");
@@ -112,30 +127,47 @@ export default function DicomViewer({ src }: Props) {
     }, [src, isInitialized]);
 
     /* ---------------------------------------------
-       Display image
+       Display image - С ПРАВИЛЬНЫМ ЦЕНТРИРОВАНИЕМ
     --------------------------------------------- */
     useEffect(() => {
         const cs = cornerstoneRef.current;
         const element = elementRef.current;
 
-        if (!cs || !element || !imageIds.length) return;
+        if (!cs || !element || !imageIds.length || index >= imageIds.length) return;
 
         let mounted = true;
 
         cs.loadAndCacheImage(imageIds[index])
             .then((image: any) => {
-                if (mounted) {
-                    // Получаем оригинальные значения окна
-                    const viewport = cs.getDefaultViewportForImage(element, image);
+                if (!mounted) return;
 
-                    // Устанавливаем значения для слайдеров
-                    if (windowWidth === 0) {
-                        setWindowWidth(viewport.voi.windowWidth);
-                        setWindowCenter(viewport.voi.windowCenter);
+                try {
+                    // Отображаем изображение
+                    cs.displayImage(element, image);
+
+                    // Получаем viewport после отображения
+                    const viewport = cs.getViewport(element);
+
+                    if (viewport) {
+                        // Устанавливаем значения для слайдеров только при первой загрузке
+                        if (windowWidth === 0) {
+                            setWindowWidth(viewport.voi.windowWidth);
+                            setWindowCenter(viewport.voi.windowCenter);
+                        }
+
+                        // Сбрасываем масштаб и центрирование для корректного отображения
+                        viewport.scale = 1;
+                        viewport.translation = { x: 0, y: 0 };
+                        cs.setViewport(element, viewport);
                     }
 
-                    cs.displayImage(element, image);
+                    // Принудительная перерисовка
+                    cs.updateImage(element);
+
                     console.log(`🖼️ Срез ${index + 1}/${imageIds.length}`);
+                } catch (displayError) {
+                    console.error("❌ Ошибка отображения:", displayError);
+                    setError(`Ошибка отображения среза ${index + 1}`);
                 }
             })
             .catch((err: Error) => {
@@ -146,7 +178,9 @@ export default function DicomViewer({ src }: Props) {
         return () => {
             mounted = false;
         };
-    }, [imageIds, index, windowWidth]);
+        // Не включаем windowWidth в зависимости, чтобы избежать лишних перерисовок
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [imageIds, index]);
 
     /* ---------------------------------------------
        Manual window adjustment
@@ -155,7 +189,7 @@ export default function DicomViewer({ src }: Props) {
         const cs = cornerstoneRef.current;
         const element = elementRef.current;
 
-        if (!cs || !element || windowWidth === 0) return;
+        if (!cs || !element || windowWidth === 0 || !imageIds.length) return;
 
         try {
             const viewport = cs.getViewport(element);
@@ -167,7 +201,7 @@ export default function DicomViewer({ src }: Props) {
         } catch (err) {
             console.error("Ошибка установки viewport:", err);
         }
-    }, [windowWidth, windowCenter]);
+    }, [windowWidth, windowCenter, imageIds.length]);
 
     /* ---------------------------------------------
        Mouse wheel navigation
@@ -271,6 +305,15 @@ export default function DicomViewer({ src }: Props) {
                         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded max-w-md text-center">
                             <div className="font-bold mb-2">Ошибка</div>
                             <div>{error}</div>
+                            <button
+                                onClick={() => {
+                                    setError(null);
+                                    setIndex(0);
+                                }}
+                                className="mt-3 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                            >
+                                Попробовать снова
+                            </button>
                         </div>
                     </div>
                 )}
