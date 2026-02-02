@@ -12,6 +12,7 @@ import {Patient, PatientCase} from "@/shared/api/patientApi";
 import {UiModal} from "@/shared/ui/UiModal";
 import {Button} from "@/shared/ui/Button";
 import {UploadDicomForm} from "@/features/case/ui/uploadDicomForm";
+import {queryClient} from "@/shared/api/query-client";
 
 const DicomViewer = dynamic(
     () => import("@/shared/ui/DicomViewer"),

@@ -46,10 +46,10 @@ export function useUploadDicomMutation({ onSuccessActions }: { onSuccessActions?
 
             queue.add({
                 title: 'DICOM загружен',
-                description: `Файл успешно загружен`,
+                description: `Файл успешно загружен, подождите, пока будут проведены расчеты, обновите страничку чуть позже`,
                 type: 'success'
             }, {
-                timeout: 3000
+                timeout: 8000
             });
         },
         onError: (error) => {
