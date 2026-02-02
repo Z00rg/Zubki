@@ -174,7 +174,6 @@ export default function DicomViewer({ src }: Props) {
 
         let mounted = true;
 
-        // Дополнительная проверка что элемент реально enabled
         const checkAndDisplay = async () => {
             try {
                 // Проверяем состояние элемента
