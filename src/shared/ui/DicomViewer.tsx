@@ -7,9 +7,6 @@ interface Props {
     src: string[];
 }
 
-/**
- * DICOM Viewer с поддержкой массива файлов
- */
 export default function DicomViewer({ src }: Props) {
     const elementRef = useRef<HTMLDivElement | null>(null);
     const cornerstoneRef = useRef<any>(null);
@@ -18,13 +15,13 @@ export default function DicomViewer({ src }: Props) {
     const [index, setIndex] = useState(0);
     const [error, setError] = useState<string | null>(null);
     const [isInitialized, setIsInitialized] = useState(false);
+    const [isElementEnabled, setIsElementEnabled] = useState(false);
 
-    // Состояние для ручного управления яркостью/контрастом
     const [windowWidth, setWindowWidth] = useState(0);
     const [windowCenter, setWindowCenter] = useState(0);
 
     /* ---------------------------------------------
-       Init Cornerstone (без tools)
+       Init Cornerstone
     --------------------------------------------- */
     useEffect(() => {
         let mounted = true;
@@ -47,7 +44,6 @@ export default function DicomViewer({ src }: Props) {
 
                 cornerstoneRef.current = cs;
 
-                // Настройка загрузчика
                 loader.external.cornerstone = cs;
                 loader.external.dicomParser = parser;
                 loader.configure({
@@ -57,10 +53,6 @@ export default function DicomViewer({ src }: Props) {
                     }
                 });
 
-                const element = elementRef.current;
-                if (!element) return;
-
-                cs.enable(element);
                 setIsInitialized(true);
                 console.log("✅ Cornerstone инициализирован");
 
@@ -74,34 +66,92 @@ export default function DicomViewer({ src }: Props) {
 
         return () => {
             mounted = false;
+
             const cs = cornerstoneRef.current;
             // eslint-disable-next-line react-hooks/exhaustive-deps
-            const el = elementRef.current;
-            if (cs && el) {
+            const element = elementRef.current;
+
+            if (cs && element) {
                 try {
-                    cs.disable(el);
+                    cs.disable(element);
+                    console.log("🔴 Element disabled (unmount)");
                 } catch (e) {
-                    console.warn("Ошибка отключения:", e);
+                    console.warn("Ошибка отключения при unmount:", e);
                 }
             }
         };
     }, []);
 
     /* ---------------------------------------------
-       Process DICOM files from props
+       Enable/Disable element based on src
+    --------------------------------------------- */
+    useEffect(() => {
+        const cs = cornerstoneRef.current;
+        const element = elementRef.current;
+
+        if (!cs || !element || !isInitialized) return;
+
+        // Если src пустой - disable элемент
+        if (!src || src.length === 0) {
+            if (isElementEnabled) {
+                try {
+                    cs.disable(element);
+                    setIsElementEnabled(false);
+                    console.log("🔴 Element disabled (empty src)");
+                } catch (e) {
+                    console.warn("Ошибка отключения:", e);
+                    setIsElementEnabled(false);
+                }
+            }
+            return;
+        }
+
+        // Если src есть - enable элемент (если ещё не enabled)
+        if (!isElementEnabled) {
+            try {
+                // Проверяем, не включен ли уже элемент
+                const enabledElements = cs.getEnabledElements();
+                const alreadyEnabled = enabledElements.some((e: any) => e.element === element);
+
+                if (!alreadyEnabled) {
+                    cs.enable(element);
+                    console.log("🟢 Element enabled");
+                }
+
+                setIsElementEnabled(true);
+            } catch (e) {
+                console.error("Ошибка включения элемента:", e);
+                // Попробуем снова через небольшую задержку
+                setTimeout(() => {
+                    try {
+                        cs.enable(element);
+                        setIsElementEnabled(true);
+                        console.log("🟢 Element enabled (retry)");
+                    } catch (retryErr) {
+                        console.error("Ошибка повторного включения:", retryErr);
+                        setError("Не удалось инициализировать просмотрщик");
+                    }
+                }, 100);
+            }
+        }
+    }, [src, isInitialized, isElementEnabled]);
+
+    /* ---------------------------------------------
+       Process DICOM files
     --------------------------------------------- */
     useEffect(() => {
         if (!isInitialized || !src || src.length === 0) {
             setImageIds([]);
+            setIndex(0);
+            setWindowWidth(0);
+            setWindowCenter(0);
             return;
         }
 
         setError(null);
 
         try {
-            // Преобразуем массив путей в imageIds для cornerstone
             const ids = src.map((url: string) => `wadouri:${url}`);
-
             console.log(`📁 Загружено ${ids.length} DICOM файлов`);
             setImageIds(ids);
             setIndex(0);
@@ -118,35 +168,59 @@ export default function DicomViewer({ src }: Props) {
         const cs = cornerstoneRef.current;
         const element = elementRef.current;
 
-        if (!cs || !element || !imageIds.length) return;
+        if (!cs || !element || !imageIds.length || !isElementEnabled) {
+            return;
+        }
 
         let mounted = true;
 
-        cs.loadAndCacheImage(imageIds[index])
-            .then((image: any) => {
-                if (mounted) {
-                    // Получаем оригинальные значения окна
-                    const viewport = cs.getDefaultViewportForImage(element, image);
+        // Дополнительная проверка что элемент реально enabled
+        const checkAndDisplay = async () => {
+            try {
+                // Проверяем состояние элемента
+                const enabledElements = cs.getEnabledElements();
+                const isEnabled = enabledElements.some((e: any) => e.element === element);
 
-                    // Устанавливаем значения для слайдеров
-                    if (windowWidth === 0) {
-                        setWindowWidth(viewport.voi.windowWidth);
-                        setWindowCenter(viewport.voi.windowCenter);
+                if (!isEnabled) {
+                    console.warn("⚠️ Element не enabled, пропускаем загрузку");
+                    // Попробуем включить
+                    try {
+                        cs.enable(element);
+                        console.log("🟢 Element re-enabled");
+                    } catch (e) {
+                        console.error("Не удалось включить элемент:", e);
+                        setError("Ошибка инициализации просмотра");
+                        return;
                     }
-
-                    cs.displayImage(element, image);
-                    console.log(`🖼️ Срез ${index + 1}/${imageIds.length}`);
                 }
-            })
-            .catch((err: Error) => {
-                console.error("❌ Ошибка загрузки изображения:", err);
+
+                const image = await cs.loadAndCacheImage(imageIds[index]);
+
+                if (!mounted) return;
+
+                const viewport = cs.getDefaultViewportForImage(element, image);
+
+                if (windowWidth === 0) {
+                    setWindowWidth(viewport.voi.windowWidth);
+                    setWindowCenter(viewport.voi.windowCenter);
+                }
+
+                cs.displayImage(element, image);
+                console.log(`🖼️ Срез ${index + 1}/${imageIds.length}`);
+
+            } catch (err) {
+                if (!mounted) return;
+                console.error("❌ Ошибка загрузки/отображения:", err);
                 setError(`Ошибка загрузки среза ${index + 1}`);
-            });
+            }
+        };
+
+        checkAndDisplay();
 
         return () => {
             mounted = false;
         };
-    }, [imageIds, index, windowWidth]);
+    }, [imageIds, index, isElementEnabled, windowWidth]);
 
     /* ---------------------------------------------
        Manual window adjustment
@@ -155,9 +229,18 @@ export default function DicomViewer({ src }: Props) {
         const cs = cornerstoneRef.current;
         const element = elementRef.current;
 
-        if (!cs || !element || windowWidth === 0) return;
+        if (!cs || !element || windowWidth === 0 || !isElementEnabled) return;
 
         try {
+            // Проверяем что элемент enabled перед использованием
+            const enabledElements = cs.getEnabledElements();
+            const isEnabled = enabledElements.some((e: any) => e.element === element);
+
+            if (!isEnabled) {
+                console.warn("⚠️ Element не enabled, пропускаем настройку viewport");
+                return;
+            }
+
             const viewport = cs.getViewport(element);
             if (viewport) {
                 viewport.voi.windowWidth = windowWidth;
@@ -167,7 +250,7 @@ export default function DicomViewer({ src }: Props) {
         } catch (err) {
             console.error("Ошибка установки viewport:", err);
         }
-    }, [windowWidth, windowCenter]);
+    }, [windowWidth, windowCenter, isElementEnabled]);
 
     /* ---------------------------------------------
        Mouse wheel navigation
@@ -216,7 +299,7 @@ export default function DicomViewer({ src }: Props) {
     }, [imageIds.length]);
 
     /* ---------------------------------------------
-       Empty state (no DICOM files)
+       Empty state
     --------------------------------------------- */
     if (!src || src.length === 0) {
         return (
@@ -257,15 +340,19 @@ export default function DicomViewer({ src }: Props) {
     --------------------------------------------- */
     return (
         <div className="flex flex-col gap-4">
-            {/* Viewport */}
             <div className="flex justify-center relative">
                 <div
-                    ref={elementRef}
-                    className="w-max max-w-full h-max max-h-full aspect-square bg-black select-none border border-gray-700 rounded-lg overflow-hidden"
-                    style={{ imageRendering: 'pixelated' }}
-                />
+                ref={elementRef}
+                className="w-max bg-black select-none border border-gray-700 rounded-lg overflow-hidden"
+                style={{
+                    imageRendering: 'pixelated',
+                    aspectRatio: '1 / 1',
+                    minHeight: '400px',
+                    maxHeight: '700px',
+                    maxWidth: '80svw'
+                }}
+            />
 
-                {/* Error overlay */}
                 {error && (
                     <div className="absolute inset-0 flex items-center justify-center bg-red-900 bg-opacity-20 p-4">
                         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded max-w-md text-center">
@@ -275,21 +362,18 @@ export default function DicomViewer({ src }: Props) {
                     </div>
                 )}
 
-                {/* Loading overlay */}
-                {!error && imageIds.length > 0 && !cornerstoneRef.current && (
+                {!error && imageIds.length > 0 && !isElementEnabled && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
                         <div className="text-white text-center">
                             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-                            <div>Загрузка изображения...</div>
+                            <div>Инициализация просмотра...</div>
                         </div>
                     </div>
                 )}
             </div>
 
-            {/* Controls */}
             {imageIds.length > 0 && !error && (
-                <div className="flex w-full mx-auto flex-col gap-4">
-                    {/* Slice navigation */}
+                <div className="flex w-full max-w-[80svw] mx-auto flex-col gap-4">
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-medium text-gray-700">
                             Срез: {index + 1} / {imageIds.length}
@@ -302,7 +386,6 @@ export default function DicomViewer({ src }: Props) {
                             >
                                 ←
                             </button>
-
                             <input
                                 type="range"
                                 min="0"
@@ -311,7 +394,6 @@ export default function DicomViewer({ src }: Props) {
                                 onChange={(e) => setIndex(Number(e.target.value))}
                                 className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500"
                             />
-
                             <button
                                 onClick={() => setIndex((i) => Math.min(i + 1, imageIds.length - 1))}
                                 disabled={index === imageIds.length - 1}
@@ -322,7 +404,6 @@ export default function DicomViewer({ src }: Props) {
                         </div>
                     </div>
 
-                    {/* Window Width */}
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-medium text-gray-700">
                             Контраст: {Math.round(windowWidth)}
@@ -337,7 +418,6 @@ export default function DicomViewer({ src }: Props) {
                         />
                     </div>
 
-                    {/* Window Center */}
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-medium text-gray-700">
                             Яркость: {Math.round(windowCenter)}
@@ -352,17 +432,20 @@ export default function DicomViewer({ src }: Props) {
                         />
                     </div>
 
-                    {/* Reset button */}
                     <button
                         onClick={() => {
                             const cs = cornerstoneRef.current;
                             const element = elementRef.current;
-                            if (cs && element) {
-                                cs.reset(element);
-                                const viewport = cs.getViewport(element);
-                                if (viewport) {
-                                    setWindowWidth(viewport.voi.windowWidth);
-                                    setWindowCenter(viewport.voi.windowCenter);
+                            if (cs && element && isElementEnabled) {
+                                try {
+                                    cs.reset(element);
+                                    const viewport = cs.getViewport(element);
+                                    if (viewport) {
+                                        setWindowWidth(viewport.voi.windowWidth);
+                                        setWindowCenter(viewport.voi.windowCenter);
+                                    }
+                                } catch (e) {
+                                    console.error("Ошибка сброса:", e);
                                 }
                             }
                         }}

@@ -200,7 +200,7 @@ export default function DentalImplantDashboard() {
                                     </UiModal>
                                 </div>
                                 <div className="flex items-center justify-center">
-                                    <DicomViewer src={selectedCase.dicom_files}/>
+                                    <DicomViewer key={selectedCase.id} src={selectedCase.dicom_files}/>
                                 </div>
                             </div>
                         )}
