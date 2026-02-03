@@ -4,10 +4,10 @@ import {authApi} from "@/shared/api/authApi";
 
 const CSRF_TOKEN_KEY = "csrftoken";
 const AUTH_URLS = [
-    "/auth/login/",
-    "/auth/refresh_token/",
-    "/auth/register/worker/",
-    "/auth/logout/",
+    "/login/",
+    "/refresh_token/",
+    "/register/worker/",
+    "/logout/",
 ];
 
 export function getCookie(name: string): string | null {
@@ -64,7 +64,7 @@ apiInstance.interceptors.response.use(
         if ( isAuthError && isNotRetry && !isAuthEndpoint ) {
             originalRequest._isRetry = true;
             try {
-                await apiInstance.post("/auth/refresh_token/");
+                await apiInstance.post("/refresh_token/");
                 return apiInstance(originalRequest);
             } catch {
                 return handleAuthFailure();
