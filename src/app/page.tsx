@@ -378,7 +378,7 @@ export default function DentalImplantDashboard() {
                                             </div>
                                             <div
                                                 className="bg-gradient-to-br border-2 border-dashed border-gray-700/50 rounded-xl w-full h-64 sm:h-96 lg:h-[500px] flex items-center justify-center relative overflow-hidden">
-                                                <div className="relative w-full h-full">
+                                                <div className="flex w-full h-full justify-center items-center">
                                                     <img
                                                         src={selectedCase.implant_data.visualization_image}
                                                         alt="Визуализация имплантата"
