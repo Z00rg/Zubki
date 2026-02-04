@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import Image from "next/image";
 import {useState} from "react";
 import {useProfileQuery} from "@/entities/profile";
 import {SignOutButton} from "@/features/auth";
@@ -289,10 +288,9 @@ export default function DentalImplantDashboard() {
                                             <div className="space-y-3 sm:space-y-4">
                                                 {/* График плотности */}
                                                 <div className="relative w-full aspect-video">
-                                                    <Image
+                                                    <img
                                                         src={selectedCase.implant_data.density_graph}
                                                         alt="График плотности кости"
-                                                        fill
                                                         className="object-contain"
                                                     />
                                                 </div>
@@ -381,10 +379,9 @@ export default function DentalImplantDashboard() {
                                             <div
                                                 className="bg-gradient-to-br border-2 border-dashed border-gray-700/50 rounded-xl w-full h-64 sm:h-96 lg:h-[500px] flex items-center justify-center relative overflow-hidden">
                                                 <div className="relative w-full h-full">
-                                                    <Image
+                                                    <img
                                                         src={selectedCase.implant_data.visualization_image}
                                                         alt="Визуализация имплантата"
-                                                        fill
                                                         className="object-contain p-4"
                                                     />
                                                 </div>
