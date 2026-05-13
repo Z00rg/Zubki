@@ -5,7 +5,6 @@ import Head from 'next/head';
 import Image from 'next/image';
 
 export default function BirthdayPage() {
-    // 0 - закрыто, 1 - письмо открыто, 2 - показан сертификат
     const [step, setStep] = useState(0);
 
     const handleInteraction = () => {
@@ -25,8 +24,8 @@ export default function BirthdayPage() {
                 style={{ perspective: '1200px' }}
                 onClick={handleInteraction}
             >
-                {/* Конверт */}
-                <div className={`relative w-full h-full transition-all duration-1000 ease-in-out ${step > 0 ? 'translate-y-32 scale-95' : ''}`}>
+                {/* Конверт и всё содержимое */}
+                <div className={`relative w-full h-full transition-all duration-1000 ease-in-out ${step > 0 ? 'translate-y-20 scale-90' : ''}`}>
 
                     {/* Задняя часть конверта */}
                     <div className="absolute inset-0 bg-pink-200 shadow-xl rounded-lg border-2 border-pink-300">
@@ -43,8 +42,9 @@ export default function BirthdayPage() {
                     </div>
 
                     {/* Письмо с поздравлением */}
-                    <div className={`absolute inset-x-4 bottom-10 bg-white p-6 shadow-md rounded-lg transition-all duration-1000 cubic-bezier(0.34, 1.56, 0.64, 1) z-10 
-                        ${step === 1 ? '-translate-y-72 scale-105 opacity-100' : step === 2 ? '-translate-y-96 opacity-0 scale-50' : 'translate-y-0 opacity-0'}`}>
+                    {/* Изменили логику: теперь оно поднимается не так высоко (-translate-y-40) и остается видимым по центру */}
+                    <div className={`absolute inset-x-4 bottom-10 bg-white p-6 shadow-2xl rounded-lg transition-all duration-1000 cubic-bezier(0.34, 1.56, 0.64, 1) z-50 
+                        ${step === 1 ? '-translate-y-40 scale-105 opacity-100' : step === 2 ? '-translate-y-20 opacity-0 scale-50' : 'translate-y-0 opacity-0'}`}>
                         <h1 className="text-xl md:text-2xl font-serif text-pink-600 mb-4 text-center">С Днем Рождения, Мамочка! 🌸</h1>
                         <div className="text-gray-700 leading-relaxed text-center space-y-3 text-sm md:text-base">
                             <p>Любимая моя мама! Желаю тебе бесконечного счастья, тепла и улыбок.</p>
@@ -52,16 +52,16 @@ export default function BirthdayPage() {
                             <p>Чтобы каждый день твой был самым лучшим, чтобы тебя радовал наш Махоня!)</p>
                             <p className="font-semibold text-pink-500 pt-1 text-lg">Люблю тебя, мамуль ❤️❤️❤️</p>
                             <div className="pt-4">
-                                <span className="inline-block px-4 py-1 bg-pink-50 border border-pink-100 rounded-full text-xs text-pink-400 animate-pulse">
-                                    Нажми еще раз для подарка
+                                <span className="inline-block px-4 py-1 bg-pink-50 border border-pink-100 rounded-full text-[10px] text-pink-400 animate-pulse">
+                                    Нажми на текст, чтобы увидеть подарок
                                 </span>
                             </div>
                         </div>
                     </div>
 
                     {/* Сертификат */}
-                    <div className={`absolute inset-0 transition-all duration-1000 ease-out z-50 
-                        ${step === 2 ? 'opacity-100 scale-110 md:scale-125 -translate-y-48' : 'opacity-0 scale-50 pointer-events-none'}`}>
+                    <div className={`absolute inset-0 transition-all duration-1000 ease-out z-[60] 
+                        ${step === 2 ? 'opacity-100 scale-110 md:scale-125 -translate-y-32' : 'opacity-0 scale-50 pointer-events-none'}`}>
                         <div className="relative w-full aspect-[1/1] shadow-2xl rounded-xl overflow-hidden border-4 border-white transform hover:scale-105 transition-transform">
                             <Image
                                 src="/certificate.jpg"
@@ -76,7 +76,7 @@ export default function BirthdayPage() {
                         </p>
                     </div>
 
-                    {/* Передние грани конверта (визуальный объем) */}
+                    {/* Передние грани конверта */}
                     <div className="absolute inset-0 bg-pink-200 z-30 shadow-[inset_0_-10px_20px_rgba(0,0,0,0.05)]" style={{ clipPath: 'polygon(0 100%, 50% 50%, 100% 100%)' }} />
                     <div className="absolute inset-0 bg-pink-100 z-30" style={{ clipPath: 'polygon(0 0, 0 100%, 50% 50%)' }} />
                     <div className="absolute inset-0 bg-pink-100 z-30" style={{ clipPath: 'polygon(100% 0, 100% 100%, 50% 50%)' }} />
